@@ -53,7 +53,7 @@ Vue.mixin({
       if (model) this.tableParams.model = model
 
       if (!this.tableParams.model) {
-        this.loading = false
+        this.isLoading = false
         // eslint-disable-next-line no-console
         return console.error('No MODEL to count')
       }
@@ -77,19 +77,19 @@ Vue.mixin({
       this.$apollo.queries[countModelName].start()
     },
     getItems(model = null, queryString = null) {
-      this.loading = true
+      this.isLoading = true
       if (model) this.tableParams.model = model
 
       if (queryString) this.tableParams.queryString = queryString
 
       if (!this.tableParams.model) {
-        this.loading = false
+        this.isLoading = false
         // eslint-disable-next-line no-console
         return console.error('No MODEL to fetch')
       }
 
       if (!this.tableParams.query) {
-        this.loading = false
+        this.isLoading = false
         // eslint-disable-next-line no-console
         return console.error('No QUERY initialized')
       }
@@ -103,7 +103,7 @@ Vue.mixin({
                     }
                 `,
         result({ loading }) {
-          this.loading = loading
+          this.isLoading = loading
         },
         update(data) {
           return data[this.tableParams.model]

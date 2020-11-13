@@ -13,8 +13,6 @@
           >
             <v-icon left>mdi-download</v-icon>Export Departments
           </download-csv>
-
-          <department-form-modal ref="deparmentFormModal" @saved="refetch()" />
         </v-col>
         <v-col cols="12">
           <v-divider class="my-2"></v-divider>
@@ -67,16 +65,11 @@
         <template slot="item.action" slot-scope="row">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                small
-                icon
-                v-bind="attrs"
-                color="primary"
-                v-on="on"
-                @click.prevent=""
-              >
-                <v-icon>mdi-square-edit-outline</v-icon>
-              </v-btn>
+              <NuxtLink :to="'/departments/' + row.item._id">
+                <v-btn small icon v-bind="attrs" color="primary" v-on="on">
+                  <v-icon>mdi-square-edit-outline</v-icon>
+                </v-btn>
+              </NuxtLink>
             </template>
             <span>Edit this item</span>
           </v-tooltip>

@@ -20,6 +20,9 @@
     "lodash": "^4.17.20",
     "nuxt": "^2.14.6",
     "sweetalert": "^2.1.2",
+    "vee-validate": "^3.4.5",
+    "vue-currency-filter": "^5.2.0",
+    "vue-json-csv": "^1.2.11",
     "vue2-editor": "^2.10.2"
   },
   "devDependencies": {
