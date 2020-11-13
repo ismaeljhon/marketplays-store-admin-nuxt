@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import Config from './config'
 
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
@@ -14,7 +15,7 @@ export default {
   },
 
   publicRuntimeConfig: {
-    apiUrl: 'http://localhost:5001',
+    apiUrl: Config.apiUrl,
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
@@ -47,7 +48,7 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: process.env.VUE_APP_GRAPHQL_URL,
+        httpEndpoint: Config.apiUrl,
       },
     },
   },

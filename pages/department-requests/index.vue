@@ -44,7 +44,7 @@
         :items="departmentRequests"
         item-key="_id"
         loading-text="Loading please wait..."
-        :loading="loading"
+        :loading="isloading"
         :options.sync="tableParams.options"
         :server-items-length="departmentRequests.length"
         @input="afterSelectedEventsOnTableList"
@@ -130,8 +130,6 @@ export default {
   components: {
     // ContactCustomerModal
   },
-  // eslint-disable-next-line no-undef
-  mixins: [TableMixin],
   data: () => ({
     search: null,
     headers: [

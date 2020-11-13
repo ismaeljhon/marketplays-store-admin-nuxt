@@ -2,11 +2,9 @@
  *   Reusable table with pagination, sorting, and filter functions
  * */
 import gql from 'graphql-tag'
+import Vue from 'vue'
 
-const TableMixin = {
-  created() {
-    // this.debounceGetItems()
-  },
+Vue.mixin({
   data() {
     return {
       tableItemsRoute:
@@ -23,9 +21,32 @@ const TableMixin = {
       tableItems: {
         selected: [],
       },
-      loading: false,
+      isloading: false,
       itemsCount: 0,
     }
+  },
+  computed: {
+    hasSelectedItems() {
+      return this.tableItems.selected.length > 0
+    },
+    tableItemsSkip() {
+      return (
+        (this.tableParams.options.page - 1) *
+        this.tableParams.options.itemsPerPage
+      )
+    },
+  },
+  watch: {
+    'tableParams.options.page'() {
+      this.getItems()
+    },
+    'tableParams.options.itemsPerPage'() {
+      this.tableParams.options.page = 1
+      this.getItems()
+    },
+  },
+  created() {
+    // this.debounceGetItems()
   },
   methods: {
     countItems(model = null) {
@@ -108,26 +129,4 @@ const TableMixin = {
         this.$apollo.queries[this.tableParams.model].stop()
     },
   },
-  computed: {
-    hasSelectedItems() {
-      return this.tableItems.selected.length > 0
-    },
-    tableItemsSkip() {
-      return (
-        (this.tableParams.options.page - 1) *
-        this.tableParams.options.itemsPerPage
-      )
-    },
-  },
-  watch: {
-    'tableParams.options.page'() {
-      this.getItems()
-    },
-    'tableParams.options.itemsPerPage'() {
-      this.tableParams.options.page = 1
-      this.getItems()
-    },
-  },
-}
-
-export default TableMixin
+})
