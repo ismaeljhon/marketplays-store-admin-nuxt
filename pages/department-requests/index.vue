@@ -111,7 +111,7 @@
           </v-tooltip>
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn small v-bind="attrs" v-on="on" color="success" icon>
+              <v-btn small v-bind="attrs" color="success" icon v-on="on">
                 <v-icon>mdi-briefcase-outline</v-icon>
               </v-btn>
             </template>
@@ -121,15 +121,12 @@
       </v-data-table>
     </v-card-text>
 
-    <!-- <contact-customer-modal ref="contactCustomerModal" /> -->
+    <contact-customer-modal ref="contactCustomerModal" />
   </v-card>
 </template>
 <script>
 export default {
   name: 'DepartmentRequests',
-  components: {
-    // ContactCustomerModal
-  },
   data: () => ({
     search: null,
     headers: [
