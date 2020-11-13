@@ -1,5 +1,4 @@
 import colors from 'vuetify/es5/util/colors'
-require('dotenv').config()
 
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
@@ -14,15 +13,17 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
+  publicRuntimeConfig: {
+    apiUrl: 'http://localhost:5001',
+  },
+
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [
-    '~/assets/style.scss'
-  ],
+  css: ['~/assets/style.scss'],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     // '~/plugins/GlobalMixins',
-    // '~/plugins/TableMixin',
+    '~/plugins/TableMixin',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -34,7 +35,6 @@ export default {
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    '@nuxtjs/dotenv',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -48,8 +48,8 @@ export default {
     clientConfigs: {
       default: {
         httpEndpoint: process.env.VUE_APP_GRAPHQL_URL,
-      }
-    }
+      },
+    },
   },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
@@ -70,14 +70,13 @@ export default {
         },
       },
     },
-    
   },
 
   ssr: false,
   loadingIndicator: {
     name: 'three-bounce',
     color: '#BE1E2D',
-    background: 'white'
+    background: 'white',
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
