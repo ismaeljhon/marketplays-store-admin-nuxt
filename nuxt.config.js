@@ -23,9 +23,10 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    // '~/plugins/GlobalMixins',
     '~/plugins/Init',
     '~/plugins/TableMixin',
+    '~/plugins/GlobalMixin',
+    '~/plugins/graphql',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -50,6 +51,14 @@ export default {
     clientConfigs: {
       default: {
         httpEndpoint: Config.apiUrl,
+      },
+    },
+    defaultOptions: {
+      // See 'apollo' definition
+      // For example: default query options
+      $query: {
+        loadingKey: 'loading',
+        fetchPolicy: 'no-cache',
       },
     },
   },

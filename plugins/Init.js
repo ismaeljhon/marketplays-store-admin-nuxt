@@ -4,6 +4,7 @@ import _upperCase from 'lodash/upperCase'
 import VueCurrencyFilter from 'vue-currency-filter'
 import * as rules from 'vee-validate/dist/rules'
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
+import swal from 'sweetalert'
 
 import JsonCSV from 'vue-json-csv'
 Vue.component('downloadCsv', JsonCSV)

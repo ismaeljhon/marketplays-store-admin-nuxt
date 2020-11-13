@@ -45,9 +45,6 @@ Vue.mixin({
       this.getItems()
     },
   },
-  created() {
-    // this.debounceGetItems()
-  },
   methods: {
     countItems(model = null) {
       if (model) this.tableParams.model = model
@@ -108,7 +105,6 @@ Vue.mixin({
         update(data) {
           return data[this.tableParams.model]
         },
-        fetchPolicy: 'no-cache',
       })
 
       this.$apollo.queries[this.tableParams.model].start()
@@ -119,6 +115,7 @@ Vue.mixin({
       }
 
       if (!this.tableParams.model) {
+        // eslint-disable-next-line no-console
         console.error('NO MODEL to refetch')
       }
 
