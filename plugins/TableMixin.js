@@ -21,7 +21,7 @@ Vue.mixin({
       tableItems: {
         selected: [],
       },
-      isloading: false,
+      isLoading: false,
       itemsCount: 0,
     }
   },

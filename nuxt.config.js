@@ -43,6 +43,7 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/apollo',
+    'sweetalert',
   ],
 
   apollo: {
