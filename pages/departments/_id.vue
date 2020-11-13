@@ -1,11 +1,14 @@
 <template>
   <v-row>
     <v-col cols="12">
+      <h1 class="font-weight-regular">{{ title }}</h1>
+    </v-col>
+    <v-col cols="12">
       <ValidationObserver ref="observer" v-slot="{ handleSubmit }">
         <form @submit.prevent="handleSubmit(submit)">
           <v-row>
             <v-col cols="12">
-              <h3 class="mb-2">General Information</h3>
+              <h4 class="mb-2">General Information</h4>
               <v-divider class="mb-5"></v-divider>
               <v-autocomplete
                 v-model="department.teamLead"
@@ -74,7 +77,7 @@
               </v-textarea>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-2">SEO</h3>
+              <h4 class="mb-2">SEO</h4>
               <v-divider class="mb-5"></v-divider>
               <v-text-field v-model="department.seoTitle">
                 <template slot="label">
@@ -185,6 +188,20 @@ export default {
       update(data) {
         return data.users
       },
+    },
+  },
+  computed: {
+    title() {
+      return `Edit Department - ${this.department.name || ''}`
+    },
+  },
+  mounted() {
+    this.$store.commit('showAsideDrawer', false)
+  },
+  methods: {
+    back() {
+      this.$router.push('/departments')
+      this.$store.commit('showAsideDrawer', true)
     },
   },
 }

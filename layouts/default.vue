@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app clipped>
+    <v-navigation-drawer v-model="drawer" clipped app>
       <v-list dense>
         <div v-for="(item, index) in navigation" :key="index">
           <v-list-item
@@ -24,12 +24,13 @@
     </v-navigation-drawer>
 
     <v-app-bar app color="indigo" dark clipped-left>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <!-- eslint-disable-next-line prettier/prettier -->
+      <v-app-bar-nav-icon @click.prevent="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>MarketPlays E-Commerce</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn color="white" v-bind="attrs" v-on="on" text>
+          <v-btn color="white" v-bind="attrs" text v-on="on">
             Howdy, John Doe<v-icon right>mdi-chevron-down</v-icon>
           </v-btn>
         </template>
@@ -64,7 +65,7 @@
 <script>
 export default {
   data: () => ({
-    drawer: null,
+    drawer: true,
     navigation: [
       {
         key: 'dashboard',
@@ -138,6 +139,11 @@ export default {
       },
     ],
   }),
+  watch: {
+    '$store.state.asideDrawer'(value) {
+      this.drawer = value
+    },
+  },
   methods: {
     logout() {},
   },
