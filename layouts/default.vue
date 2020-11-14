@@ -84,7 +84,7 @@ export default {
         key: 'services',
         label: 'Products & Services',
         icon: 'cogs',
-        link: '/products',
+        link: '/services',
       },
       {
         key: 'subscriptions',
