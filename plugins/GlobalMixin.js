@@ -15,7 +15,7 @@ Vue.mixin({
     getAllowedItems(item, fields) {
       const updatedItem = {}
       _forEach(Object.keys(item), (key) => {
-        if (fields.includes(key) > -1) {
+        if (fields.includes(key)) {
           updatedItem[key] = item[key]
         }
       })
