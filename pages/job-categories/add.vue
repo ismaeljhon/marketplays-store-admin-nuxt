@@ -1,9 +1,6 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <h2 class="text-center">Add New Job Category</h2>
-    </v-col>
-    <v-col cols="12">
       <job-category-form></job-category-form>
     </v-col>
   </v-row>
@@ -11,8 +8,9 @@
 <script>
 export default {
   name: 'AddJobCategory',
+  layout: 'single-page',
   mounted() {
-    this.$store.commit('showAsideDrawer', false)
+    this.$store.commit('setPageTitle', 'Add New Job Category')
   },
 }
 </script>
