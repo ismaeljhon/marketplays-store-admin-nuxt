@@ -13,6 +13,11 @@
           >
             <v-icon left>mdi-download</v-icon>Export Departments
           </download-csv>
+          <NuxtLink to="/departments/add">
+            <v-btn small color="primary">
+              <v-icon left>mdi-plus</v-icon>Add Department
+            </v-btn>
+          </NuxtLink>
         </v-col>
         <v-col cols="12">
           <v-divider class="my-2"></v-divider>
