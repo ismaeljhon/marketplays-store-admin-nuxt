@@ -71,7 +71,7 @@ export default {
         key: 'dashboard',
         label: 'Dashboard',
         icon: 'view-dashboard',
-        disabled: true,
+        link: '/',
       },
       { key: 'orders', label: 'Orders', icon: 'cart-outline', link: '/orders' },
       {
