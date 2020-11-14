@@ -1,7 +1,11 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <department-form :department="department"></department-form>
+      <loading
+        v-if="$apollo.queries.department.loading"
+        loading-text="Loading Department..."
+      />
+      <department-form v-else :department="department"></department-form>
     </v-col>
   </v-row>
 </template>
@@ -51,11 +55,6 @@ export default {
           `Edit Department - ${response.data.department.name}`
         )
       },
-    },
-  },
-  computed: {
-    title() {
-      return `Edit Department - ${this.department.name || ''}`
     },
   },
 }
