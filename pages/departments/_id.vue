@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <h1 class="font-weight-regular">{{ title }}</h1>
+      <h2 class="font-weight-regular">{{ title }}</h2>
     </v-col>
     <v-col cols="12">
       <department-form :department="department"></department-form>

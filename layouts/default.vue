@@ -26,7 +26,7 @@
     <v-app-bar app color="indigo" dark clipped-left>
       <!-- eslint-disable-next-line prettier/prettier -->
       <v-app-bar-nav-icon @click.prevent="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>MarketPlays E-Commerce</v-toolbar-title>
+      <v-toolbar-title> MarketPlays E-Commerce </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
