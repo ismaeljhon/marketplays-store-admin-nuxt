@@ -2,7 +2,7 @@
   <ValidationObserver ref="observer" v-slot="{ handleSubmit }">
     <form @submit.prevent="handleSubmit(submit)">
       <v-row>
-        <v-col cols="12">
+        <v-col cols="6">
           <h4 class="mb-2">General Information</h4>
           <v-divider class="mb-5"></v-divider>
           <v-autocomplete
@@ -71,7 +71,7 @@
             </template>
           </v-textarea>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="6">
           <h4 class="mb-2">SEO</h4>
           <v-divider class="mb-5"></v-divider>
           <v-text-field v-model="form.seoTitle">
