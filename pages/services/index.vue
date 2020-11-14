@@ -92,7 +92,7 @@
           :items="services"
           :search="search"
           :options="tableParams.options"
-          :items-count="itemsCount"
+          :item-list-count="itemsCount"
           @refresh="refreshItems"
           @delete="deleteItems"
           @selected="afterSelectedEventsOnTableList"
@@ -155,6 +155,9 @@ export default {
     },
     afterSelectedEventsOnTableList(items) {
       this.tableItems.selected = items
+    },
+    refreshItems(customOptions) {
+      this.tableParams.options = customOptions
     },
   },
 }

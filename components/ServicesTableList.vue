@@ -7,7 +7,7 @@
       :items.sync="items"
       item-key="_id"
       :options.sync="customOptions"
-      :server-items-length="itemsCount"
+      :server-items-length="itemListCount"
       @input="$emit('selected', selectedItems)"
       @dblclick:row="emitEdit"
       @update:page="$emit('refresh', customOptions)"
@@ -20,7 +20,7 @@
       <template slot="item.action" slot-scope="row">
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <NuxtLink :to="'/services/' + item._id">
+            <NuxtLink :to="'/services/' + row.item._id">
               <v-btn color="primary" small icon v-bind="attrs" v-on="on">
                 <v-icon>mdi-square-edit-outline</v-icon>
               </v-btn>
@@ -67,7 +67,7 @@ export default {
       type: [Object, Array],
       default: null,
     },
-    itemsCount: {
+    itemListCount: {
       type: Number,
       default: null,
     },
