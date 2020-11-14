@@ -1,9 +1,6 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <h2 class="font-weight-regular">{{ title }}</h2>
-    </v-col>
-    <v-col cols="12">
       <department-form :department="department"></department-form>
     </v-col>
   </v-row>
@@ -13,6 +10,7 @@ import gql from 'graphql-tag'
 
 export default {
   name: 'EditDepartment',
+  layout: 'single-page',
   data: () => ({
     department: {},
   }),
@@ -47,15 +45,18 @@ export default {
         }
         return data.department
       },
+      result(response) {
+        this.$store.commit(
+          'setPageTitle',
+          `Edit Department - ${response.data.department.name}`
+        )
+      },
     },
   },
   computed: {
     title() {
       return `Edit Department - ${this.department.name || ''}`
     },
-  },
-  mounted() {
-    this.$store.commit('showAsideDrawer', false)
   },
 }
 </script>

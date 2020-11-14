@@ -1,9 +1,9 @@
 export const state = () => ({
-  asideDrawer: true,
+  pageTitle: null,
 })
 
 export const mutations = {
-  showAsideDrawer(state, asideDrawer) {
-    state.asideDrawer = asideDrawer
+  setPageTitle(state, pageTitle) {
+    state.pageTitle = pageTitle
   },
 }

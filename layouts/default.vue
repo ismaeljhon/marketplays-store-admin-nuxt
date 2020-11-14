@@ -48,7 +48,7 @@
       <v-container fluid>
         <v-row>
           <v-col>
-            <router-view></router-view>
+            <nuxt></nuxt>
           </v-col>
         </v-row>
       </v-container>
