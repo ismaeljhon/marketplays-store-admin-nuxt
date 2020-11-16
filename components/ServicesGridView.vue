@@ -19,17 +19,6 @@
         <v-card-actions>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <NuxtLink :to="'/services/' + item._id">
-                <v-btn icon color="primary" v-bind="attrs" v-on="on">
-                  <v-icon>mdi-square-edit-outline</v-icon>
-                </v-btn>
-              </NuxtLink>
-            </template>
-            <span>Edit this Product</span>
-          </v-tooltip>
-          <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
               <v-btn
                 icon
                 color="error"
@@ -41,6 +30,17 @@
               </v-btn>
             </template>
             <span>Delete Product</span>
+          </v-tooltip>
+          <v-spacer></v-spacer>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <NuxtLink :to="'/services/' + item._id">
+                <v-btn icon color="primary" v-bind="attrs" v-on="on">
+                  <v-icon>mdi-square-edit-outline</v-icon>
+                </v-btn>
+              </NuxtLink>
+            </template>
+            <span>Edit this Product</span>
           </v-tooltip>
         </v-card-actions>
       </v-card>
