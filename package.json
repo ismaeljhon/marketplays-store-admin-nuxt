@@ -23,6 +23,7 @@
     "vee-validate": "^3.4.5",
     "vue-currency-filter": "^5.2.0",
     "vue-json-csv": "^1.2.11",
+    "vue-moment": "^4.1.0",
     "vue2-editor": "^2.10.2"
   },
   "devDependencies": {

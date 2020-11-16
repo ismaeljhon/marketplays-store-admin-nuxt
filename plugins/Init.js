@@ -9,6 +9,8 @@ import swal from 'sweetalert'
 import JsonCSV from 'vue-json-csv'
 Vue.component('downloadCsv', JsonCSV)
 
+Vue.use(require('vue-moment'))
+
 Vue.use(VueCurrencyFilter, {
   symbol: '$',
   thousandsSeparator: ',',
@@ -23,6 +25,7 @@ Vue.component('ValidationProvider', ValidationProvider)
 Vue.component('ValidationObserver', ValidationObserver)
 
 Object.keys(rules).forEach((rule) => {
+  // eslint-disable-next-line import/namespace
   extend(rule, rules[rule])
 })
 

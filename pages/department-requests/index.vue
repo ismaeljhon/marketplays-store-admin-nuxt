@@ -130,13 +130,13 @@ export default {
   data: () => ({
     search: null,
     headers: [
+      { text: 'Order #', align: 'start', value: 'orderNumber' },
       {
         text: 'Service Subscription',
         align: 'start',
         value: 'service',
         width: '200px',
       },
-      { text: 'Order #', align: 'start', value: 'orderNumber' },
       { text: 'Customer', align: 'start', value: 'customer' },
       { text: 'Last action taken', align: 'start', value: 'lastActionTaken' },
       { text: 'Actions', align: 'start', sortable: false, value: 'action' },

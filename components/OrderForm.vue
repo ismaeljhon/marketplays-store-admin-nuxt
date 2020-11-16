@@ -1,0 +1,231 @@
+<template>
+  <ValidationObserver ref="observer" v-slot="{ handleSubmit }">
+    <form @submit.prevent="handleSubmit(submit)">
+      <v-row>
+        <v-col cols="12">
+          <h4 class="mb-2">General Information</h4>
+          <v-divider class="mb-5"></v-divider>
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="Customer"
+            :rules="'required'"
+          >
+            <v-autocomplete
+              v-model="form.customer"
+              :items="customers"
+              hide-no-data
+              item-text="name"
+              item-value="_id"
+              placeholder="Select customer"
+              label="Customer"
+              :error-messages="errors"
+            >
+            </v-autocomplete>
+          </ValidationProvider>
+
+          <v-card
+            v-for="(subscription, subscriptionIndex) in form.subscriptions"
+            :key="subscriptionIndex"
+            class="mt-3"
+          >
+            <v-card-title>
+              <h3>Subscription #{{ subscriptionIndex + 1 }}</h3>
+              <v-spacer></v-spacer>
+              <v-btn
+                v-if="subscriptionIndex > 0"
+                class="ml-2"
+                color="error"
+                icon
+                @click.prevent="removeSubscription(subscriptionIndex)"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-card-text>
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="Subscription Type"
+                :rules="'required'"
+              >
+                <v-autocomplete
+                  v-model="form.subscriptions[subscriptionIndex].type"
+                  :items="subscriptionTypes"
+                  hide-no-data
+                  item-text="name"
+                  item-value="_id"
+                  placeholder="Select Subscription Type"
+                  label="Subscription"
+                  :error-messages="errors"
+                >
+                </v-autocomplete>
+              </ValidationProvider>
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="Services"
+                :rules="'required'"
+              >
+                <v-autocomplete
+                  v-model="form.subscriptions[subscriptionIndex].services"
+                  :items="services"
+                  hide-no-data
+                  item-text="name"
+                  item-value="_id"
+                  placeholder="Select services"
+                  label="Services"
+                  chips
+                  multiple
+                  deletable-chips
+                  :error-messages="errors"
+                >
+                </v-autocomplete>
+              </ValidationProvider>
+            </v-card-text>
+          </v-card>
+          <v-btn
+            class="mt-3"
+            small
+            color="primary"
+            outlined
+            @click.prevent="addMoreSubscription"
+          >
+            <v-icon left>mdi-plus</v-icon>Add more Subscriptions
+          </v-btn>
+        </v-col>
+      </v-row>
+
+      <div class="mt-5">
+        <v-btn @click.prevent="back">cancel</v-btn>
+        <v-btn color="primary" type="submit" class="float-right">save</v-btn>
+      </div>
+    </form>
+  </ValidationObserver>
+</template>
+<script>
+import gql from 'graphql-tag'
+import _assign from 'lodash/assign'
+
+export default {
+  // eslint-disable-next-line vue/name-property-casing
+  name: 'order-form',
+  apollo: {
+    customers: {
+      query: gql`
+        query {
+          customers {
+            _id
+            name
+          }
+        }
+      `,
+      update(data) {
+        return data.customers
+      },
+    },
+    subscriptionTypes: {
+      query: gql`
+        query {
+          subscriptionTypes {
+            _id
+            name
+          }
+        }
+      `,
+      update(data) {
+        return data.subscriptionTypes
+      },
+    },
+    services: {
+      query: gql`
+        query {
+          services {
+            _id
+            name
+          }
+        }
+      `,
+      update(data) {
+        return data.services
+      },
+    },
+  },
+  props: {
+    order: {
+      type: Object,
+      default: null,
+    },
+    previousPage: {
+      type: String,
+      default: '/orders',
+    },
+  },
+  data: () => ({
+    form: {
+      customer: null,
+      subscriptions: [{ type: null, services: [] }],
+    },
+    users: [],
+    subscriptionTypes: [],
+  }),
+  watch: {
+    order(value) {
+      if (value) this.form = value
+    },
+  },
+  methods: {
+    back() {
+      this.$router.push(this.previousPage)
+      this.resetForm()
+    },
+    resetForm() {
+      _assign(this, {
+        form: {
+          customer: null,
+          subscriptions: [{ type: null, services: [] }],
+        },
+      })
+    },
+    addMoreSubscription() {
+      this.form.subscriptions.push({
+        type: null,
+        services: [],
+      })
+    },
+    addMoreSubscriptionService(index) {
+      this.form.subscriptions[index].services.push({
+        type: null,
+        services: [],
+      })
+    },
+    removeSubscription(index) {
+      this.form.subscriptions.splice(index, 1)
+    },
+    async submit() {
+      const allowedItems = this.getAllowedItems(this.form, [
+        'customer',
+        'subscriptions',
+      ])
+
+      let result = null
+      if (this.department) {
+        result = await this.updateMutation(
+          'Order',
+          allowedItems,
+          this.department._id
+        )
+      } else {
+        result = await this.createMutation('Order', allowedItems)
+      }
+
+      if (result) {
+        this.back()
+        // eslint-disable-next-line no-undef
+        swal({
+          title: 'Success',
+          icon: 'success',
+          text: 'Order has been successfully saved',
+        })
+      }
+    },
+  },
+}
+</script>
