@@ -148,7 +148,7 @@
       </v-row>
 
       <div class="mt-2">
-        <v-btn @click.prevent="reset">cancel</v-btn>
+        <v-btn @click.prevent="back">cancel</v-btn>
         <v-btn color="primary" type="submit" class="float-right">save</v-btn>
       </div>
     </form>
@@ -232,7 +232,6 @@ export default {
   methods: {
     back() {
       this.$router.push(this.previousPage)
-      this.$store.commit('showAsideDrawer', true)
       this.resetForm()
     },
     resetForm() {
