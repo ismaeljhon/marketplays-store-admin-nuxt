@@ -87,10 +87,10 @@ export default {
         link: '/services',
       },
       {
-        key: 'subscriptions',
-        label: 'Subscriptions',
+        key: 'subscription-types',
+        label: 'Subscriptions Types',
         icon: 'youtube-subscription',
-        disabled: true,
+        link: '/subscription-types',
       },
       {
         key: 'job-categories',
