@@ -53,25 +53,7 @@
           {{ row.item.service.name }}
         </template>
         <template slot="item.customer" slot-scope="row">
-          <article v-if="row.item.customer" class="mt-3">
-            <h3 v-if="row.item.customer.fullName">
-              {{ row.item.customer.fullName }}<br />
-            </h3>
-            <p>
-              <span v-if="row.item.customer.email">
-                <v-icon left small>mdi-email</v-icon>
-                {{ row.item.customer.email }}<br />
-              </span>
-              <span v-if="row.item.customer.phoneNumber">
-                <v-icon left small>mdi-phone</v-icon>
-                {{ row.item.customer.phoneNumber }}<br />
-              </span>
-              <span v-if="row.item.customer.mobileNumber">
-                <v-icon left small>mdi-cellphone</v-icon>
-                {{ row.item.customer.mobileNumber }}<br />
-              </span>
-            </p>
-          </article>
+          <customer-details :customer="row.item.customer" />
         </template>
         <template slot="item.lastActionTaken" slot-scope="row">
           <p>{{ row.item.lastActionTaken }}</p>

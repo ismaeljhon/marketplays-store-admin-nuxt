@@ -23,13 +23,24 @@
             </v-autocomplete>
           </ValidationProvider>
 
+          <v-card v-if="customerSelected">
+            <v-card-title>Customer Details</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <customer-details
+                :customer="customerSelected"
+                show-full-address
+              />
+            </v-card-text>
+          </v-card>
+
           <v-card
             v-for="(subscription, subscriptionIndex) in form.subscriptions"
             :key="subscriptionIndex"
             class="mt-3"
           >
             <v-card-title>
-              <h3>Subscription #{{ subscriptionIndex + 1 }}</h3>
+              Subscription #{{ subscriptionIndex + 1 }}
               <v-spacer></v-spacer>
               <v-btn
                 v-if="subscriptionIndex > 0"
@@ -41,6 +52,7 @@
                 <v-icon>mdi-close</v-icon>
               </v-btn>
             </v-card-title>
+            <v-divider></v-divider>
             <v-card-text>
               <ValidationProvider
                 v-slot="{ errors }"
@@ -114,6 +126,8 @@ export default {
           customers {
             _id
             name
+            email
+            address
           }
         }
       `,
@@ -163,9 +177,18 @@ export default {
       customer: null,
       subscriptions: [{ type: null, services: [] }],
     },
-    users: [],
+    customers: [],
     subscriptionTypes: [],
   }),
+  computed: {
+    customerSelected() {
+      return (
+        this.customers.find(
+          (customer) => customer._id === this.form.customer
+        ) || null
+      )
+    },
+  },
   watch: {
     order(value) {
       if (value) this.form = value
