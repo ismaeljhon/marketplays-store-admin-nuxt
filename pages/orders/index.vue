@@ -78,7 +78,7 @@
             <template v-slot:activator="{ on, attrs }">
               <NuxtLink :to="'/orders/' + row.item._id + '/view'">
                 <v-btn small v-bind="attrs" color="primary" icon v-on="on">
-                  <v-icon>mdi-eye-outline</v-icon>
+                  <v-icon>mdi-open-in-new</v-icon>
                 </v-btn>
               </NuxtLink>
             </template>
