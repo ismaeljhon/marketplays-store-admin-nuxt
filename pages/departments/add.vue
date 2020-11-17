@@ -11,6 +11,10 @@ export default {
   layout: 'single-page',
   mounted() {
     this.$store.commit('setPageTitle', 'New Department')
+    this.$store.commit('setBackToPage', {
+      link: '/departments',
+      title: 'Departments',
+    })
   },
 }
 </script>

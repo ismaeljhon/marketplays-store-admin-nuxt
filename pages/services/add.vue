@@ -11,6 +11,10 @@ export default {
   layout: 'single-page',
   mounted() {
     this.$store.commit('setPageTitle', 'New Service')
+    this.$store.commit('setBackToPage', {
+      link: '/services',
+      title: 'Services',
+    })
   },
 }
 </script>

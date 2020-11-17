@@ -4,9 +4,10 @@
       <!-- eslint-disable-next-line prettier/prettier -->
       <v-row>
         <v-col cols="4">
-          <NuxtLink to="/">
+          <NuxtLink :to="$store.state.backToPage.link || '/'">
             <v-btn text>
-              <v-icon left>mdi-arrow-left</v-icon> Back to Dashboard
+              <v-icon left>mdi-arrow-left</v-icon> Back to
+              {{ $store.state.backToPage.title || 'Dashboard' }}
             </v-btn>
           </NuxtLink>
         </v-col>

@@ -11,6 +11,10 @@ export default {
   layout: 'single-page',
   mounted() {
     this.$store.commit('setPageTitle', 'New Subscription Type')
+    this.$store.commit('setBackToPage', {
+      link: '/subscription-types',
+      title: 'Subscription Types',
+    })
   },
 }
 </script>

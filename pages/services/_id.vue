@@ -67,5 +67,11 @@ export default {
       },
     },
   },
+  mounted() {
+    this.$store.commit('setBackToPage', {
+      link: '/services',
+      title: 'Services',
+    })
+  },
 }
 </script>

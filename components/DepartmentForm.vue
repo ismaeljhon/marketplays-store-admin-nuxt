@@ -164,7 +164,6 @@ export default {
   methods: {
     back() {
       this.$router.push(this.previousPage)
-      this.$store.commit('showAsideDrawer', true)
       this.resetForm()
     },
     resetForm() {

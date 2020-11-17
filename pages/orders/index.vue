@@ -61,6 +61,9 @@
         :server-items-length="itemsCount"
         @input="afterSelectedEventsOnTableList"
       >
+        <template slot="item.customer" slot-scope="row">
+          <customer-details :customer="row.item.customer" />
+        </template>
         <template slot="item.totalAmount" slot-scope="row">
           {{ row.item.totalAmount | currency }}
         </template>
@@ -73,28 +76,13 @@
         <template slot="item.action" slot-scope="row">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <NuxtLink :to="'/orders/' + row.item._id">
-                <v-btn small icon v-bind="attrs" color="primary" v-on="on">
-                  <v-icon>mdi-square-edit-outline</v-icon>
+              <NuxtLink :to="'/orders/' + row.item._id + '/view'">
+                <v-btn small v-bind="attrs" color="primary" icon v-on="on">
+                  <v-icon>mdi-eye-outline</v-icon>
                 </v-btn>
               </NuxtLink>
             </template>
-            <span>Edit this item</span>
-          </v-tooltip>
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                small
-                icon
-                v-bind="attrs"
-                color="error"
-                v-on="on"
-                @click.prevent=""
-              >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </template>
-            <span>Delete this item</span>
+            <span>View Order</span>
           </v-tooltip>
         </template>
       </v-data-table>
@@ -114,6 +102,7 @@ export default {
       { text: 'Total', align: 'start', value: 'totalAmount' },
       { text: 'Order Created', align: 'start', value: 'created' },
       { text: 'Order Updated', align: 'start', value: 'changed' },
+      { text: 'Actions', align: 'start', sortable: false, value: 'action' },
     ],
     tableParams: {
       model: 'orders',
@@ -121,7 +110,11 @@ export default {
         {
           _id
           orderNumber
-          customer
+          customer {
+            name
+            email
+            address
+          }
           totalAmount
           created
           changed

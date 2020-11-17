@@ -53,5 +53,11 @@ export default {
       return `Edit Job Category - ${this.jobCategory.name || ''}`
     },
   },
+  mounted() {
+    this.$store.commit('setBackToPage', {
+      link: '/job-categories',
+      title: 'Job Categories',
+    })
+  },
 }
 </script>

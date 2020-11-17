@@ -50,5 +50,11 @@ export default {
       },
     },
   },
+  mounted() {
+    this.$store.commit('setBackToPage', {
+      link: '/subscription-types',
+      title: 'Subscription Types',
+    })
+  },
 }
 </script>

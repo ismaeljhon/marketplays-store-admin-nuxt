@@ -57,5 +57,11 @@ export default {
       },
     },
   },
+  mounted() {
+    this.$store.commit('setBackToPage', {
+      link: '/departments',
+      title: 'Departments',
+    })
+  },
 }
 </script>
