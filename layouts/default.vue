@@ -106,12 +106,6 @@ export default {
       },
       { key: 'divider' },
       {
-        key: 'email-template',
-        label: 'Email Template',
-        icon: 'email-newsletter',
-        link: '/email-templates',
-      },
-      {
         key: 'payment-integration',
         label: 'Payment Integration',
         icon: 'credit-card-sync-outline',
@@ -131,11 +125,11 @@ export default {
         disabled: true,
       },
       {
-        key: 'department-requests',
-        label: 'Department Requests',
+        key: 'service-requests',
+        label: 'Service Requests',
         icon: 'phone-message-outline',
         icon_color: 'orange darken-1',
-        link: '/department-requests',
+        link: '/service-requests',
       },
     ],
   }),
