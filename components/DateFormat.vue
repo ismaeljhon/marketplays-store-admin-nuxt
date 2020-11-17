@@ -1,5 +1,5 @@
 <template>
-  <span>{{ date | moment('D MMM YYYY hh:mm A') }}</span>
+  <span>{{ date | moment('MM/DD/YYYY hh:mma') }}</span>
 </template>
 <script>
 export default {
