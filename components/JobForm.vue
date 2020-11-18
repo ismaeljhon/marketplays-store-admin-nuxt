@@ -18,20 +18,14 @@
               label="Title"
             ></v-text-field>
           </ValidationProvider>
-          <ValidationProvider
-            v-slot="{ errors }"
-            name="Slug"
-            :rules="'required'"
+          <v-text-field
+            v-model="form.slug"
+            hint="This would be used for pretty url"
+            persistent-hint
+            class="mb-3"
           >
-            <v-text-field
-              v-model="form.slug"
-              :error-messages="errors"
-              label="Url"
-              hint="This would be used for pretty url"
-              persistent-hint
-              class="mb-3"
-            ></v-text-field>
-          </ValidationProvider>
+            <template slot="label"> Url <small>(optional)</small> </template>
+          </v-text-field>
           <ValidationProvider
             v-slot="{ errors }"
             name="Job Type"
@@ -265,6 +259,7 @@ export default {
   },
   mounted() {
     this.currencies = this.getCurrencies()
+    console.log(this.$route.query.serviceRequestId)
   },
   methods: {
     back() {

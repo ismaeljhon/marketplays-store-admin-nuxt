@@ -100,8 +100,8 @@ export default {
       { text: 'Order #', align: 'start', value: 'orderNumber' },
       { text: 'Customer', align: 'start', value: 'customer' },
       { text: 'Total', align: 'start', value: 'totalAmount' },
-      { text: 'Order Created', align: 'start', value: 'created' },
-      { text: 'Order Updated', align: 'start', value: 'changed' },
+      { text: 'Created', align: 'start', value: 'created' },
+      { text: 'Modified', align: 'start', value: 'changed' },
       { text: 'Actions', align: 'start', sortable: false, value: 'action' },
     ],
     tableParams: {

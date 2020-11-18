@@ -39,20 +39,13 @@
               label="Name"
             ></v-text-field>
           </ValidationProvider>
-          <ValidationProvider
-            v-slot="{ errors }"
-            name="Slug"
-            :rules="'required'"
-          >
-            <v-text-field
-              v-model="form.slug"
-              :error-messages="errors"
-              label="Url"
-              hint="This would be used for pretty url"
-              persistent-hint
-              class="mb-3"
-            ></v-text-field>
-          </ValidationProvider>
+          <v-text-field
+            v-model="form.slug"
+            label="Url"
+            hint="This would be used for pretty url"
+            persistent-hint
+            class="mb-3"
+          ></v-text-field>
           <ValidationProvider
             v-slot="{ errors }"
             name="Pricing"

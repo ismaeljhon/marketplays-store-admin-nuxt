@@ -18,20 +18,13 @@
               label="Name"
             ></v-text-field>
           </ValidationProvider>
-          <ValidationProvider
-            v-slot="{ errors }"
-            name="Slug"
-            :rules="'required'"
-          >
-            <v-text-field
-              v-model="form.slug"
-              :error-messages="errors"
-              label="Url"
-              hint="This would be used for pretty url"
-              persistent-hint
-              class="mb-3"
-            ></v-text-field>
-          </ValidationProvider>
+          <v-text-field
+            v-model="form.slug"
+            label="Url"
+            hint="This would be used for pretty url"
+            persistent-hint
+            class="mb-3"
+          ></v-text-field>
           <ValidationProvider
             v-slot="{ errors }"
             name="Workforce Threshold"
@@ -60,22 +53,15 @@
             label="Department"
             placeholder="Select Department"
           ></v-autocomplete>
-          <ValidationProvider
-            v-slot="{ errors }"
-            name="Product Manager"
-            :rules="'required'"
-          >
-            <v-autocomplete
-              v-model="form.projectManager"
-              :items="users"
-              hide-no-data
-              item-text="fullName"
-              item-value="_id"
-              label="Product Manager"
-              placeholder="Select Team Product Manager from the users"
-              :error-messages="errors"
-            ></v-autocomplete>
-          </ValidationProvider>
+          <v-autocomplete
+            v-model="form.projectManager"
+            :items="users"
+            hide-no-data
+            item-text="fullName"
+            item-value="_id"
+            label="Product Manager"
+            placeholder="Select Product Manager"
+          ></v-autocomplete>
           <ValidationProvider
             v-slot="{ errors }"
             name="Pricing"
@@ -212,7 +198,7 @@ export default {
         pricing: null,
         tags: [],
         slug: null,
-        workforceThreshold: null,
+        workforceThreshold: 100,
         seoTitle: null,
         seoKeywords: null,
         seoDescription: null,
