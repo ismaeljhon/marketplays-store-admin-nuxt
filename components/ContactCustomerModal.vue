@@ -24,7 +24,7 @@
                 </v-btn-toggle>
               </v-col>
               <v-col cols="12">
-                <p class="my-2">Notes <small>(optional)</small></p>
+                <p class="my-2">Notes</p>
                 <vue-editor v-model="form.notes"></vue-editor>
               </v-col>
             </v-row>

@@ -16,10 +16,11 @@
               hide-no-data
               item-text="name"
               item-value="_id"
-              placeholder="Select customer"
-              label="Customer"
               :error-messages="errors"
             >
+              <template slot="label">
+                Customer <span class="red--text">*</span>
+              </template>
             </v-autocomplete>
           </ValidationProvider>
 
@@ -65,10 +66,11 @@
                   hide-no-data
                   item-text="name"
                   item-value="_id"
-                  placeholder="Select Subscription Type"
-                  label="Subscription"
                   :error-messages="errors"
                 >
+                  <template slot="label">
+                    Subscription <span class="red--text">*</span>
+                  </template>
                 </v-autocomplete>
               </ValidationProvider>
               <ValidationProvider
@@ -82,13 +84,14 @@
                   hide-no-data
                   item-text="name"
                   item-value="_id"
-                  placeholder="Select services"
-                  label="Services"
                   chips
                   multiple
                   deletable-chips
                   :error-messages="errors"
                 >
+                  <template slot="label">
+                    Services <span class="red--text">*</span>
+                  </template>
                 </v-autocomplete>
               </ValidationProvider>
             </v-card-text>

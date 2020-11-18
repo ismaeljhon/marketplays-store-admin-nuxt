@@ -10,11 +10,11 @@
             name="Name"
             :rules="'required'"
           >
-            <v-text-field
-              v-model="form.name"
-              :error-messages="errors"
-              label="Name"
-            ></v-text-field>
+            <v-text-field v-model="form.name" :error-messages="errors">
+              <template slot="label">
+                Name <span class="red--text">*</span>
+              </template>
+            </v-text-field>
           </ValidationProvider>
           <v-text-field
             v-model="form.slug"
@@ -27,31 +27,23 @@
         <v-col cols="6">
           <h3 class="mb-2">SEO</h3>
           <v-divider class="mb-5"></v-divider>
-          <v-text-field v-model="form.seoTitle">
-            <template slot="label">
-              SEO Title <small>(optional)</small>
-            </template>
-          </v-text-field>
+          <v-text-field
+            v-model="form.seoTitle"
+            label="SEO Title"
+          ></v-text-field>
           <v-text-field
             v-model="form.seoKeywords"
             label="SEO Keywords"
             hint="Enter keywords related to your product."
             persistent-hint
             class="mb-3"
-          >
-            <template slot="label">
-              SEO Keywords <small>(optional)</small>
-            </template>
-          </v-text-field>
+          ></v-text-field>
           <v-textarea
             v-model="form.seoDescription"
             hint="Type a description that summarizes your product.."
             persistent-hint
-          >
-            <template slot="label">
-              SEO Description <small>(optional)</small>
-            </template>
-          </v-textarea>
+            label="SEO Description"
+          ></v-textarea>
         </v-col>
       </v-row>
 

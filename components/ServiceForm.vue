@@ -12,11 +12,11 @@
             name="Name"
             :rules="'required'"
           >
-            <v-text-field
-              v-model="form.name"
-              :error-messages="errors"
-              label="Name"
-            ></v-text-field>
+            <v-text-field v-model="form.name" :error-messages="errors">
+              <template slot="label">
+                Name <span class="red--text">*</span>
+              </template>
+            </v-text-field>
           </ValidationProvider>
           <v-text-field
             v-model="form.slug"
@@ -34,13 +34,16 @@
               v-model="form.workforceThreshold"
               type="number"
               :error-messages="errors"
-              label="Workforce Threshold"
-            ></v-text-field>
+            >
+              <template slot="label">
+                Workforce Threshold <span class="red--text">*</span>
+              </template>
+            </v-text-field>
           </ValidationProvider>
-          <v-text-field v-model="form.shortDescription">
-            <template slot="label">
-              Short Description <small>(optional)</small>
-            </template>
+          <v-text-field
+            v-model="form.shortDescription"
+            label="Short Description"
+          >
           </v-text-field>
         </v-col>
         <v-col cols="6">
@@ -71,8 +74,11 @@
               v-model="form.pricing"
               type="number"
               :error-messages="errors"
-              label="Pricing"
-            ></v-text-field>
+            >
+              <template slot="label">
+                Pricing <span class="red--text">*</span>
+              </template>
+            </v-text-field>
           </ValidationProvider>
           <v-autocomplete
             v-model="form.tags"
@@ -85,13 +91,12 @@
             hide-no-data
             hint="Type then press comma (,) to add"
             :search-input.sync="searchInput"
+            label="Tags"
             @keydown="processTagsInput"
-          >
-            <template slot="label"> Tags <small>(optional)</small> </template>
-          </v-autocomplete>
+          ></v-autocomplete>
         </v-col>
         <v-col cols="12">
-          <p class="my-2">Description <small>(optional)</small></p>
+          <p class="my-2">Description</p>
           <vue-editor v-model="form.description"></vue-editor>
         </v-col>
 
@@ -100,11 +105,10 @@
           <v-divider></v-divider>
         </v-col>
         <v-col cols="6">
-          <v-text-field v-model="form.seoTitle">
-            <template slot="label">
-              SEO Title <small>(optional)</small>
-            </template>
-          </v-text-field>
+          <v-text-field
+            v-model="form.seoTitle"
+            label="SEO Title"
+          ></v-text-field>
         </v-col>
         <v-col cols="6">
           <v-text-field
@@ -113,11 +117,7 @@
             hint="Enter keywords related to your form."
             persistent-hint
             class="mb-3"
-          >
-            <template slot="label">
-              SEO Keywords <small>(optional)</small>
-            </template>
-          </v-text-field>
+          ></v-text-field>
         </v-col>
         <v-col cols="12">
           <v-textarea
@@ -125,11 +125,8 @@
             hint="Type a description that summarizes your form.."
             persistent-hint
             class="mb-5"
-          >
-            <template slot="label">
-              SEO Description <small>(optional)</small>
-            </template>
-          </v-textarea>
+            label="SEO Description"
+          ></v-textarea>
         </v-col>
       </v-row>
 

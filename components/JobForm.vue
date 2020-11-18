@@ -12,20 +12,13 @@
             name="Title"
             :rules="'required'"
           >
-            <v-text-field
-              v-model="form.title"
-              :error-messages="errors"
-              label="Title"
-            ></v-text-field>
+            <v-text-field v-model="form.title" :error-messages="errors">
+              <template slot="label">
+                Title <span class="red--text">*</span>
+              </template>
+            </v-text-field>
           </ValidationProvider>
-          <v-text-field
-            v-model="form.slug"
-            hint="This would be used for pretty url"
-            persistent-hint
-            class="mb-3"
-          >
-            <template slot="label"> Url <small>(optional)</small> </template>
-          </v-text-field>
+          <v-text-field v-model="form.slug" label="Url"></v-text-field>
           <ValidationProvider
             v-slot="{ errors }"
             name="Job Type"
@@ -34,9 +27,12 @@
             <v-select
               v-model="form.type"
               :items="jobTypes"
-              label="Job Type"
               :error-messages="errors"
-            ></v-select>
+            >
+              <template slot="label">
+                Job Type <span class="red--text">*</span>
+              </template>
+            </v-select>
           </ValidationProvider>
           <ValidationProvider
             v-slot="{ errors }"
@@ -46,11 +42,14 @@
             <v-select
               v-model="form.category"
               :items="jobCategories"
-              label="Category"
               :error-messages="errors"
               item-text="name"
               item-value="id"
-            ></v-select>
+            >
+              <template slot="label">
+                Category <span class="red--text">*</span>
+              </template>
+            </v-select>
           </ValidationProvider>
         </v-col>
         <v-col cols="6">
@@ -62,9 +61,12 @@
             <v-select
               v-model="form.biddable"
               :items="canBidItems"
-              label="Open for Bid?"
               :error-messages="errors"
-            ></v-select>
+            >
+              <template slot="label">
+                Open for Bid? <span class="red--text">*</span>
+              </template>
+            </v-select>
           </ValidationProvider>
           <ValidationProvider
             v-slot="{ errors }"
@@ -76,11 +78,12 @@
               :items="currencies"
               item-text="name"
               item-value="code"
-              label="Currency"
-              placeholder="Please Select Currency"
               :error-messages="errors"
-              class="mb-6"
-            ></v-autocomplete>
+            >
+              <template slot="label">
+                Currency <span class="red--text">*</span>
+              </template>
+            </v-autocomplete>
           </ValidationProvider>
           <ValidationProvider
             v-slot="{ errors }"
@@ -93,7 +96,8 @@
               :error-messages="errors"
             >
               <template slot="label">
-                Opening Market Bid
+                Opening Market biddable
+                <span class="red--text">*</span>
                 <small v-if="form.currency">(in {{ form.currency }})</small>
               </template>
             </v-text-field>
@@ -109,7 +113,9 @@
               :error-messages="errors"
             >
               <template slot="label">
-                Timeframe <small>(in minutes)</small>
+                Timeframe
+                <span class="red--text">*</span>
+                <small>(in minutes)</small>
               </template>
             </v-text-field>
           </ValidationProvider>
@@ -131,42 +137,33 @@
               multiple
             ></v-autocomplete>
           </ValidationProvider>
-          <v-textarea v-model="form.description" label="Description">
-            <template slot="label">
-              Description <small>(optional)</small>
-            </template>
-          </v-textarea>
-          <p class="my-2">Instructions <small>(optional)</small></p>
+          <v-textarea
+            v-model="form.description"
+            label="Description"
+          ></v-textarea>
+          <p class="my-2">Instructions</p>
           <vue-editor v-model="form.instructions"></vue-editor>
         </v-col>
         <v-col cols="12">
           <h3 class="mb-2">SEO</h3>
           <v-divider class="mb-5"></v-divider>
-          <v-text-field v-model="form.seoTitle">
-            <template slot="label">
-              SEO Title <small>(optional)</small>
-            </template>
-          </v-text-field>
+          <v-text-field
+            v-model="form.seoTitle"
+            label="SEO Title"
+          ></v-text-field>
           <v-text-field
             v-model="form.seoKeywords"
             label="SEO Keywords"
             hint="Enter keywords related to your product."
             persistent-hint
             class="mb-3"
-          >
-            <template slot="label">
-              SEO Keywords <small>(optional)</small>
-            </template>
-          </v-text-field>
+          ></v-text-field>
           <v-textarea
             v-model="form.seoDescription"
             hint="Type a description that summarizes your product.."
             persistent-hint
-          >
-            <template slot="label">
-              SEO Description <small>(optional)</small>
-            </template>
-          </v-textarea>
+            label="SEO Description"
+          ></v-textarea>
         </v-col>
       </v-row>
 

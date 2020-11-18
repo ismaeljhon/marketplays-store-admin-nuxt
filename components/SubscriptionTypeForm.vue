@@ -10,21 +10,20 @@
             name="Name"
             :rules="'required'"
           >
-            <v-text-field
-              v-model="form.name"
-              :error-messages="errors"
-              label="Name"
-            ></v-text-field>
+            <v-text-field v-model="form.name" :error-messages="errors">
+              <template slot="label">
+                Name <span class="red--text">*</span>
+              </template>
+            </v-text-field>
           </ValidationProvider>
           <v-text-field
             v-model="form.shortDescription"
             label="Short Description"
           ></v-text-field>
-          <v-textarea v-model="form.description" label="Description">
-            <template slot="label">
-              Description <small>(optional)</small>
-            </template>
-          </v-textarea>
+          <v-textarea
+            v-model="form.description"
+            label="Description"
+          ></v-textarea>
           <v-select
             v-model="form.policy"
             :items="policies"
