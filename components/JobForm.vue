@@ -6,6 +6,25 @@
           <h3 class="mb-2">General Information</h3>
           <v-divider></v-divider>
         </v-col>
+        <v-col cols="12">
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="Service Request"
+            :rules="'required'"
+          >
+            <v-autocomplete
+              v-model="form.serviceRequest"
+              :items="serviceRequests"
+              :error-messages="errors"
+              item-text="label"
+              item-value="_id"
+            >
+              <template slot="label">
+                Service Request <span class="red--text">*</span>
+              </template>
+            </v-autocomplete>
+          </ValidationProvider>
+        </v-col>
         <v-col cols="6">
           <ValidationProvider
             v-slot="{ errors }"
@@ -121,23 +140,6 @@
           </ValidationProvider>
         </v-col>
         <v-col cols="12">
-          <ValidationProvider
-            v-slot="{ errors }"
-            name="Service Request"
-            :rules="'required'"
-          >
-            <v-autocomplete
-              v-model="form.serviceRequest"
-              :items="serviceRequests"
-              :error-messages="errors"
-              item-text="label"
-              item-value="_id"
-            >
-              <template slot="label">
-                Service Request <span class="red--text">*</span>
-              </template>
-            </v-autocomplete>
-          </ValidationProvider>
           <ValidationProvider
             v-slot="{ errors }"
             name="Required Certificates"
