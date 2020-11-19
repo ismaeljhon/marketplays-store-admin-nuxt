@@ -126,7 +126,7 @@
                 :theme="'grid'"
                 multiple
                 deletable
-                sortable="hold"
+                sortable="handle"
                 meta
                 :accept="'image/*'"
                 :max-size="'10MB'"
