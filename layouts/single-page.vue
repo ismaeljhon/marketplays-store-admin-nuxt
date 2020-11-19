@@ -19,10 +19,10 @@
         <v-col cols="4"></v-col>
       </v-row>
     </v-app-bar>
-    <v-main>
+    <v-main style="background: #fafafa">
       <v-container fluid>
         <v-row>
-          <v-col>
+          <v-col class="py-0">
             <nuxt></nuxt>
           </v-col>
         </v-row>
