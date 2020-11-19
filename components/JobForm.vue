@@ -123,6 +123,23 @@
         <v-col cols="12">
           <ValidationProvider
             v-slot="{ errors }"
+            name="Service Request"
+            :rules="'required'"
+          >
+            <v-autocomplete
+              v-model="form.serviceRequest"
+              :items="serviceRequests"
+              :error-messages="errors"
+              item-text="label"
+              item-value="_id"
+            >
+              <template slot="label">
+                Service Request <span class="red--text">*</span>
+              </template>
+            </v-autocomplete>
+          </ValidationProvider>
+          <ValidationProvider
+            v-slot="{ errors }"
             name="Required Certificates"
             :rules="'required'"
           >
@@ -177,6 +194,7 @@
 <script>
 import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
+import _forEach from 'lodash/forEach'
 import RequiredCertificates from '@/assets/required_certificates'
 import { VueEditor } from 'vue2-editor'
 
@@ -213,6 +231,42 @@ export default {
         return data.jobCategories
       },
     },
+    serviceRequests: {
+      query: gql`
+        query {
+          serviceRequests {
+            _id
+            subscription {
+              subscriptionType
+              orderline {
+                order {
+                  orderNumber
+                  customer {
+                    name
+                  }
+                }
+              }
+            }
+            service {
+              name
+            }
+            status
+          }
+        }
+      `,
+      update(data) {
+        const serviceRequests = data.serviceRequests
+        const outputData = []
+
+        _forEach(serviceRequests, (item) => {
+          outputData.push({
+            _id: item._id,
+            label: `Order #: ${item.subscription.orderline.order.orderNumber} - ${item.subscription.subscriptionType} - ${item.service.name} - ${item.subscription.orderline.order.customer.name}`,
+          })
+        })
+        return outputData
+      },
+    },
   },
   props: {
     job: {
@@ -240,6 +294,7 @@ export default {
       currency: null,
       requiredCertificates: [],
       category: null,
+      serviceRequest: null,
     },
     currencies: [],
     canBidItems: [
@@ -248,6 +303,7 @@ export default {
     ],
     requiredCertificates: RequiredCertificates,
     jobTypes: ['Project-Based', 'Hourly Rate'],
+    serviceRequests: [],
   }),
   watch: {
     job(value) {
@@ -256,7 +312,7 @@ export default {
   },
   mounted() {
     this.currencies = this.getCurrencies()
-    console.log(this.$route.query.serviceRequestId)
+    this.form.serviceRequest = this.$route.query.serviceRequestId || null
   },
   methods: {
     back() {
@@ -280,6 +336,7 @@ export default {
           currency: null,
           requiredCertificates: [],
           category: null,
+          serviceRequest: null,
         },
       })
     },

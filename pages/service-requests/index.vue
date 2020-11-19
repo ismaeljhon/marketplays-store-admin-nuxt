@@ -51,7 +51,11 @@
           {{ row.item.subscription.orderline.order.orderNumber }}
         </template>
         <template slot="item.service" slot-scope="row">
-          {{ row.item.service.name }}
+          <p>
+            {{ row.item.subscription.subscriptionType }}
+            <br />
+            {{ row.item.service.name }}
+          </p>
         </template>
         <template slot="item.customer" slot-scope="row">
           <customer-details
@@ -97,7 +101,15 @@
           </v-tooltip>
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn small v-bind="attrs" color="success" icon v-on="on">
+              <v-btn
+                small
+                v-bind="attrs"
+                color="success"
+                icon
+                :href="`/jobs/add?serviceRequestId=${row.item._id}`"
+                target="_blank"
+                v-on="on"
+              >
                 <v-icon>mdi-briefcase-outline</v-icon>
               </v-btn>
             </template>
@@ -122,16 +134,23 @@ export default {
         text: 'Service Subscription',
         align: 'start',
         value: 'service',
-        width: '200px',
+        width: '300px',
       },
       { text: 'Customer', align: 'start', value: 'customer' },
       { text: 'Last action taken', align: 'start', value: 'lastActionTaken' },
-      { text: 'Actions', align: 'start', sortable: false, value: 'action' },
+      {
+        text: 'Actions',
+        align: 'start',
+        sortable: false,
+        value: 'action',
+        width: '150px',
+      },
     ],
     tableParams: {
       model: 'serviceRequests',
       query: gql`
         {
+          _id
           subscription {
             subscriptionType
             orderline {
