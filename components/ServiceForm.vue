@@ -144,7 +144,73 @@
           </v-row>
         </v-card-text>
       </v-card>
-
+      <v-card class="mt-5">
+        <v-card-title>Videos</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12"></v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+      <v-card class="mt-5">
+        <v-card-title>
+          Attributes
+          <v-spacer></v-spacer>
+          <v-btn
+            small
+            class="ml-2"
+            color="primary"
+            @click.prevent="$refs.productAttributeFormModal.show()"
+          >
+            <v-icon left>mdi-plus</v-icon> New Attribute
+          </v-btn>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12">
+              <v-data-table
+                :headers="productAttributeTableHeader"
+                :items="form.attributes"
+              >
+                <template slot="item.action" slot-scope="row">
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        small
+                        icon
+                        v-bind="attrs"
+                        color="primary"
+                        v-on="on"
+                        @click.prevent="$refs.productAttributeFormModal.show(row.item, false)"
+                      >
+                        <v-icon>mdi-square-edit-outline</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Edit this item</span>
+                  </v-tooltip>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        small
+                        icon
+                        v-bind="attrs"
+                        color="error"
+                        v-on="on"
+                        @click.prevent="deleteAttribute(row.item)"
+                      >
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Delete this item</span>
+                  </v-tooltip>
+                </template>
+              </v-data-table>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
       <v-card class="mt-5">
         <v-card-title>SEO</v-card-title>
         <v-divider></v-divider>
@@ -183,11 +249,20 @@
         <v-btn color="primary" type="submit" class="float-right">save</v-btn>
       </div>
     </form>
+
+    <product-attribute-form-modal
+      ref="productAttributeFormModal"
+      :current-product-attributes="form.attributes"
+      @update="updateProductAttribute"
+    />
   </ValidationObserver>
 </template>
 <script>
 import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
+import _find from 'lodash/find'
+import _filter from 'lodash/filter'
+import _forEach from 'lodash/forEach'
 import { VueEditor } from 'vue2-editor'
 
 export default {
@@ -240,6 +315,8 @@ export default {
       description: null,
       shortDescription: null,
       pricing: null,
+      enquireOnly: false,
+      viewInStore: true,
       tags: [],
       slug: null,
       workforceThreshold: 100,
@@ -248,6 +325,8 @@ export default {
       seoDescription: null,
       projectManager: null,
       department: null,
+      attributes: [],
+      variants: [],
     },
     tags: ['seo', 'web', 'web development', 'web design', 'graphics'],
     productImageAttachments: [],
@@ -255,10 +334,29 @@ export default {
     uploadUrl: 'https://www.mocky.io/v2/5d4fb20b3000005c111099e3',
     uploadHeaders: { 'X-Test-Header': 'vue-file-agent' },
     fileRecordsForUpload: [], // maintain an upload queue
+    productAttributeTableHeader: [
+      { text: 'Name', align: 'start', value: 'name', width: '300px' },
+      { text: 'Options', align: 'start', value: 'options' },
+      {
+        text: 'Description',
+        align: 'start',
+        value: 'description',
+        width: '300px',
+      },
+      {
+        text: 'Actions',
+        align: 'start',
+        sortable: false,
+        value: 'action',
+        width: '150px',
+      },
+    ],
   }),
   watch: {
     service(value) {
-      if (value) this.form = value
+      if (value) {
+        _assign(this.form, value)
+      }
     },
   },
   methods: {
@@ -273,14 +371,18 @@ export default {
           description: null,
           shortDescription: null,
           pricing: null,
+          enquireOnly: false,
+          viewInStore: true,
           tags: [],
           slug: null,
-          workforceThreshold: null,
+          workforceThreshold: 100,
           seoTitle: null,
           seoKeywords: null,
           seoDescription: null,
           projectManager: null,
           department: null,
+          attributes: [],
+          variants: [],
         },
         newTag: null,
       })
@@ -293,6 +395,8 @@ export default {
         'description',
         'shortDescription',
         'pricing',
+        'enquireOnly',
+        'viewInStore',
         'tags',
         'slug',
         'workforceThreshold',
@@ -301,6 +405,8 @@ export default {
         'seoDescription',
         'projectManager',
         'department',
+        'attributes',
+        'variants',
       ])
       // eslint-disable-next-line no-console
       return console.log(allowedItems)
@@ -374,6 +480,22 @@ export default {
       } else {
         this.deleteUploadedFile(fileRecord)
       }
+    },
+    updateProductAttribute(attribute) {
+      // eslint-disable-next-line no-console
+      let itemFound = false
+      _forEach(this.form.attributes, (item) => {
+        if (attribute.code === item.code) {
+          _assign(item, attribute)
+          itemFound = true
+        }
+      })
+      if (!itemFound) this.form.attributes.push(attribute)
+    },
+    deleteAttribute(item) {
+      this.form.attributes = _filter(this.form.attributes, (i) => {
+        return item.code !== i.code
+      })
     },
   },
 }

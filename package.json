@@ -19,6 +19,7 @@
     "graphql-tag": "^2.11.0",
     "lodash": "^4.17.20",
     "nuxt": "^2.14.6",
+    "short-uuid": "^4.1.0",
     "sweetalert": "^2.1.2",
     "vee-validate": "^3.4.5",
     "vue-currency-filter": "^5.2.0",

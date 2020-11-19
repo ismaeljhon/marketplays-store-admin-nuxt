@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-app-bar app color="primary" dark clipped-left>
+    <v-app-bar app color="primary" dark clipped-left class="single-page-header">
       <!-- eslint-disable-next-line prettier/prettier -->
       <v-row>
         <v-col cols="4">
@@ -32,5 +32,12 @@
 </template>
 
 <script>
-export default {}
+export default {
+  name: 'SinglePage',
+}
 </script>
+<style scoped>
+.single-page-header {
+  z-index: 9999;
+}
+</style>

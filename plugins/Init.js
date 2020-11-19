@@ -54,3 +54,6 @@ Vue.filter('uppercase', (value) => {
 Vue.filter('first_of_array', (value) => {
   return value[0]
 })
+Vue.filter('join', (value) => {
+  return value.join(', ')
+})
