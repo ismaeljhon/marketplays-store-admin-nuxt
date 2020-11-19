@@ -87,13 +87,21 @@
             chips
             deletable-chips
             hide-selected
-            persistent-hint
             hide-no-data
-            hint="Type then press comma (,) to add"
-            :search-input.sync="searchInput"
             label="Tags"
-            @keydown="processTagsInput"
-          ></v-autocomplete>
+          >
+            <template slot="append-outer">
+              <v-btn
+                fab
+                x-small
+                color="primary"
+                @click.prevent="$refs.addTagFormModal.show()"
+              >
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
+            </template>
+          </v-autocomplete>
+          <add-tag-form-modal ref="addTagFormModal" @save="updateTags" />
         </v-col>
         <v-col cols="12">
           <p class="my-2">Description</p>
@@ -144,7 +152,7 @@ import { VueEditor } from 'vue2-editor'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
-  name: 'department-form',
+  name: 'service-form',
   components: {
     VueEditor,
   },
@@ -186,27 +194,23 @@ export default {
       default: '/services',
     },
   },
-  data() {
-    return {
-      form: {
-        name: null,
-        description: null,
-        shortDescription: null,
-        pricing: null,
-        tags: [],
-        slug: null,
-        workforceThreshold: 100,
-        seoTitle: null,
-        seoKeywords: null,
-        seoDescription: null,
-        projectManager: null,
-        department: null,
-      },
-      tags: ['seo', 'web', 'web development', 'web design', 'graphics'],
-      tagDelimiter: ',',
-      searchInput: null,
-    }
-  },
+  data: () => ({
+    form: {
+      name: null,
+      description: null,
+      shortDescription: null,
+      pricing: null,
+      tags: [],
+      slug: null,
+      workforceThreshold: 100,
+      seoTitle: null,
+      seoKeywords: null,
+      seoDescription: null,
+      projectManager: null,
+      department: null,
+    },
+    tags: ['seo', 'web', 'web development', 'web design', 'graphics'],
+  }),
   watch: {
     service(value) {
       if (value) this.form = value
@@ -233,6 +237,7 @@ export default {
           projectManager: null,
           department: null,
         },
+        newTag: null,
       })
     },
     async submit() {
@@ -274,21 +279,9 @@ export default {
         })
       }
     },
-    processTagsInput(element) {
-      const newValue = element.target.value.replaceAll(this.tagDelimiter, '')
-
-      if (
-        newValue &&
-        element.key === this.tagDelimiter &&
-        !this.form.tags.includes(newValue)
-      ) {
-        this.form.tags.push(newValue)
-        this.tags.push(newValue)
-      }
-
-      if (element.target.value === this.tagDelimiter) {
-        this.searchInput = null
-      }
+    updateTags(newTag) {
+      if (!this.form.tags.includes(newTag)) this.form.tags.push(newTag)
+      if (!this.tags.includes(newTag)) this.tags.push(newTag)
     },
   },
 }
