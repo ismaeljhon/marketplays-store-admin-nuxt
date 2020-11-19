@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="700">
+  <v-dialog v-model="dialog" max-width="700" @click:outside="reset">
     <v-card>
       <v-card-title>Add New Tag</v-card-title>
       <v-card-text>
