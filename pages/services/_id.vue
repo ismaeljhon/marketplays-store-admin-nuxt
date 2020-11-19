@@ -13,7 +13,7 @@
 import gql from 'graphql-tag'
 
 export default {
-  name: 'EditDepartment',
+  name: 'EditService',
   layout: 'single-page',
   data: () => ({
     service: {},
