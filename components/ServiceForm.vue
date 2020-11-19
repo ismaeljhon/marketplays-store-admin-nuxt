@@ -116,22 +116,30 @@
         <v-divider></v-divider>
         <v-card-text>
           <v-row>
-            <v-col cols="12" class="text-center">
-              <handy-uploader
-                card-type="tile"
-                :document-attachment.sync="productImageAttachments"
-                file-uploader-type="simple"
-                :max-file-size="10240"
-                :image-compressor="true"
-                :image-compress-level="0.8"
-                :max-file-count="10"
-                badge-counter
-                change-file-name
-                add-file-description
-                file-accept="image/png,image/gif,image/jpeg,image/webp"
-                :custom-lang="productImageAttachmentsCustomLang"
-                lang="custom"
-              ></handy-uploader>
+            <v-col cols="12">
+              <v-alert prominent text type="info">
+                First image would be selected as a featured image
+              </v-alert>
+              <VueFileAgent
+                ref="vueFileAgent"
+                v-model="fileRecords"
+                :theme="'grid'"
+                multiple
+                deletable
+                sortable="hold"
+                meta
+                :accept="'image/*'"
+                :max-size="'10MB'"
+                :max-files="14"
+                :help-text="'Choose images'"
+                :error-text="{
+                  type: 'Invalid file type. Only images Allowed',
+                  size: 'Files should not exceed 10MB in size',
+                }"
+                @select="filesSelected($event)"
+                @beforedelete="onBeforeDelete($event)"
+                @delete="fileDeleted($event)"
+              ></VueFileAgent>
             </v-col>
           </v-row>
         </v-card-text>
@@ -181,14 +189,12 @@
 import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
 import { VueEditor } from 'vue2-editor'
-import handyUploader from 'handy-uploader/src/components/handyUploader'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
   name: 'service-form',
   components: {
     VueEditor,
-    handyUploader,
   },
   apollo: {
     users: {
@@ -245,28 +251,10 @@ export default {
     },
     tags: ['seo', 'web', 'web development', 'web design', 'graphics'],
     productImageAttachments: [],
-    productImageAttachmentsCustomLang: {
-      custom: {
-        insertFile: 'Insert Image(s)',
-        insertNewFile: 'Click here to add image(s)',
-        add: 'Add Image(s)',
-        delete: 'Delete',
-        edit: 'Update Image',
-        deleteDialog: {
-          message: 'Are you sure you want to delete the image?',
-          cancel: 'cancel',
-        },
-        size: {
-          kb: 'KB',
-          mb: 'MB',
-        },
-        maxFileSizeAlert: 'Max file Size is',
-        maxFileCountAlert: 'Max file Count is',
-        fileName: 'File Name',
-        fileDescription: 'File Description',
-        fileTags: 'File Tags',
-      },
-    },
+    fileRecords: [],
+    uploadUrl: 'https://www.mocky.io/v2/5d4fb20b3000005c111099e3',
+    uploadHeaders: { 'X-Test-Header': 'vue-file-agent' },
+    fileRecordsForUpload: [], // maintain an upload queue
   }),
   watch: {
     service(value) {
@@ -342,6 +330,50 @@ export default {
     updateTags(newTag) {
       if (!this.form.tags.includes(newTag)) this.form.tags.push(newTag)
       if (!this.tags.includes(newTag)) this.tags.push(newTag)
+    },
+    uploadFiles() {
+      // Using the default uploader. You may use another uploader instead.
+      this.$refs.vueFileAgent.upload(
+        this.uploadUrl,
+        this.uploadHeaders,
+        this.fileRecordsForUpload
+      )
+      this.fileRecordsForUpload = []
+    },
+    deleteUploadedFile(fileRecord) {
+      // Using the default uploader. You may use another uploader instead.
+      this.$refs.vueFileAgent.deleteUpload(
+        this.uploadUrl,
+        this.uploadHeaders,
+        fileRecord
+      )
+    },
+    filesSelected(fileRecordsNewlySelected) {
+      const validFileRecords = fileRecordsNewlySelected.filter(
+        (fileRecord) => !fileRecord.error
+      )
+      this.fileRecordsForUpload = this.fileRecordsForUpload.concat(
+        validFileRecords
+      )
+    },
+    onBeforeDelete(fileRecord) {
+      const i = this.fileRecordsForUpload.indexOf(fileRecord)
+      if (i !== -1) {
+        // queued file, not yet uploaded. Just remove from the arrays
+        this.fileRecordsForUpload.splice(i, 1)
+        const k = this.fileRecords.indexOf(fileRecord)
+        if (k !== -1) this.fileRecords.splice(k, 1)
+      } else if (confirm('Are you sure you want to delete?')) {
+        this.$refs.vueFileAgent.deleteFileRecord(fileRecord) // will trigger 'delete' event
+      }
+    },
+    fileDeleted(fileRecord) {
+      const i = this.fileRecordsForUpload.indexOf(fileRecord)
+      if (i !== -1) {
+        this.fileRecordsForUpload.splice(i, 1)
+      } else {
+        this.deleteUploadedFile(fileRecord)
+      }
     },
   },
 }

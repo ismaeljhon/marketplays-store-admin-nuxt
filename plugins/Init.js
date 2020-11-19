@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import Vue from 'vue'
 import _capitalize from 'lodash/capitalize'
 import _upperCase from 'lodash/upperCase'
@@ -5,8 +7,14 @@ import VueCurrencyFilter from 'vue-currency-filter'
 import * as rules from 'vee-validate/dist/rules'
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
 import swal from 'sweetalert'
-
+import VueFileAgent from 'vue-file-agent'
+import VueFileAgentStyles from 'vue-file-agent/dist/vue-file-agent.css'
 import JsonCSV from 'vue-json-csv'
+import { SlickList, SlickItem } from 'vue-slicksort'
+
+Vue.component('vfa-sortable-list', SlickList)
+Vue.component('vfa-sortable-item', SlickItem)
+Vue.use(VueFileAgent);
 Vue.component('downloadCsv', JsonCSV)
 
 Vue.use(require('vue-moment'))
