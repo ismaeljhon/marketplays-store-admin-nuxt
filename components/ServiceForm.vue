@@ -27,6 +27,21 @@
               ></v-text-field>
               <ValidationProvider
                 v-slot="{ errors }"
+                name="Pricing"
+                :rules="'required|numeric'"
+              >
+                <v-text-field
+                  v-model="form.pricing"
+                  type="number"
+                  :error-messages="errors"
+                >
+                  <template slot="label">
+                    Pricing <span class="red--text">*</span>
+                  </template>
+                </v-text-field>
+              </ValidationProvider>
+              <ValidationProvider
+                v-slot="{ errors }"
                 name="Workforce Threshold"
                 :rules="'required|numeric'"
               >
@@ -40,13 +55,26 @@
                   </template>
                 </v-text-field>
               </ValidationProvider>
-              <v-text-field
-                v-model="form.shortDescription"
-                label="Short Description"
-              >
-              </v-text-field>
             </v-col>
             <v-col cols="6">
+              <v-row class="mb-2">
+                <v-col class="py-0">
+                  <v-switch
+                    v-model="form.viewInStore"
+                    label="Show in Store?"
+                    color="success"
+                  ></v-switch>
+                </v-col>
+                <v-col class="pa-0">
+                  <v-switch
+                    v-model="form.enquireOnly"
+                    label="Set as Enquiry Only"
+                    color="success"
+                    hint="If set to yes, this service cannot be purchased"
+                    persistent-hint
+                  ></v-switch>
+                </v-col>
+              </v-row>
               <v-autocomplete
                 v-model="form.department"
                 :items="departments"
@@ -65,21 +93,6 @@
                 label="Product Manager"
                 placeholder="Select Product Manager"
               ></v-autocomplete>
-              <ValidationProvider
-                v-slot="{ errors }"
-                name="Pricing"
-                :rules="'required|numeric'"
-              >
-                <v-text-field
-                  v-model="form.pricing"
-                  type="number"
-                  :error-messages="errors"
-                >
-                  <template slot="label">
-                    Pricing <span class="red--text">*</span>
-                  </template>
-                </v-text-field>
-              </ValidationProvider>
               <v-autocomplete
                 v-model="form.tags"
                 :items="tags"
@@ -103,7 +116,12 @@
               </v-autocomplete>
               <add-tag-form-modal ref="addTagFormModal" @save="updateTags" />
             </v-col>
-            <v-col cols="12">
+            <v-col cols="12" class="py-0">
+              <v-text-field
+                v-model="form.shortDescription"
+                label="Short Description"
+              >
+              </v-text-field>
               <p class="my-2">Description</p>
               <vue-editor v-model="form.description"></vue-editor>
             </v-col>
@@ -149,7 +167,9 @@
         <v-divider></v-divider>
         <v-card-text>
           <v-row>
-            <v-col cols="12"></v-col>
+            <v-col cols="12">
+              <no-data-message message="No Video available" />
+            </v-col>
           </v-row>
         </v-card-text>
       </v-card>
@@ -244,7 +264,7 @@
         </v-card-text>
       </v-card>
 
-      <div class="mt-2">
+      <div class="mt-5">
         <v-btn @click.prevent="back">cancel</v-btn>
         <v-btn color="primary" type="submit" class="float-right">save</v-btn>
       </div>
