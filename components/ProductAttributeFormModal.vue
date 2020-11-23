@@ -19,6 +19,37 @@
             </ValidationProvider>
             <v-text-field v-model="form.description" label="Description">
             </v-text-field>
+            <ValidationProvider
+              v-slot="{ errors }"
+              name="Options"
+              :rules="'required'"
+            >
+              <v-autocomplete
+                v-model="form.options"
+                :items="attributeOptions"
+                multiple
+                chips
+                deletable-chips
+                hide-selected
+                hide-no-data
+                item-text="name"
+                :error-messages="errors"
+              >
+                <template slot="label">
+                  Options <span class="red--text">*</span>
+                </template>
+                <template slot="append-outer">
+                  <v-btn
+                    fab
+                    x-small
+                    color="primary"
+                    @click.prevent="$refs.addAttributeOptionsFormModal.show()"
+                  >
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </template>
+              </v-autocomplete>
+            </ValidationProvider>
           </v-card-text>
           <v-card-actions class="pa-5">
             <v-btn @click.prevent="reset">cancel</v-btn>
@@ -30,6 +61,10 @@
         </v-card>
       </form>
     </ValidationObserver>
+    <add-attribute-options-form-modal
+      ref="addAttributeOptionsFormModal"
+      @update="updateAttributeOptions"
+    />
   </v-dialog>
 </template>
 <script>
@@ -54,6 +89,7 @@ export default {
     },
     item: {},
     isCreate: true,
+    attributeOptions: [],
   }),
   computed: {
     title() {
@@ -67,11 +103,12 @@ export default {
       const shortUuid = require('short-uuid')
 
       _assign(this, {
-        form: JSON.parse(JSON.stringify(item)),
         dialog: true,
         isCreate,
         item,
       })
+
+      _assign(this.form, JSON.parse(JSON.stringify(item)))
 
       if (isCreate) this.form.code = `attrib-${shortUuid.generate()}`
     },
@@ -85,6 +122,7 @@ export default {
           options: [],
         },
         isCreate: true,
+        attributeOptions: [],
       })
       this.$refs.observer.reset()
     },
@@ -104,6 +142,11 @@ export default {
 
       this.$emit('update', this.form)
       this.reset()
+    },
+    updateAttributeOptions(option) {
+      console.log(option)
+      this.form.options.push(option)
+      this.attributeOptions.push(option)
     },
   },
 }

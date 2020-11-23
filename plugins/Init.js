@@ -5,7 +5,12 @@ import _capitalize from 'lodash/capitalize'
 import _upperCase from 'lodash/upperCase'
 import VueCurrencyFilter from 'vue-currency-filter'
 import * as rules from 'vee-validate/dist/rules'
-import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
+import {
+  ValidationProvider,
+  ValidationObserver,
+  extend,
+  localize,
+} from 'vee-validate'
 import swal from 'sweetalert'
 import VueFileAgent from 'vue-file-agent'
 import VueFileAgentStyles from 'vue-file-agent/dist/vue-file-agent.css'
@@ -43,6 +48,17 @@ for (const [rule, validation] of Object.entries(rules)) {
     ...validation,
   })
 }
+
+localize({
+  en: {
+    messages: {
+      required: (_, { _field_ }) => `The ${_field_} field is required`,
+      min: 'This field must have no less than {length} characters',
+      max: (_, { length }) =>
+        `This field must have no more than ${length} characters`,
+    },
+  },
+})
 
 /** Filters */
 Vue.filter('capitalize', (value) => {

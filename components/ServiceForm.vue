@@ -1,286 +1,292 @@
 <template>
-  <ValidationObserver ref="observer" v-slot="{ handleSubmit }">
-    <form @submit.prevent="handleSubmit(submit)">
-      <v-card>
-        <v-card-title>General Information</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-row>
-            <v-col cols="6">
-              <ValidationProvider
-                v-slot="{ errors }"
-                name="Name"
-                :rules="'required'"
-              >
-                <v-text-field v-model="form.name" :error-messages="errors">
-                  <template slot="label">
-                    Name <span class="red--text">*</span>
-                  </template>
-                </v-text-field>
-              </ValidationProvider>
-              <v-text-field
-                v-model="form.slug"
-                label="Url"
-                hint="This would be used for pretty url"
-                persistent-hint
-                class="mb-3"
-              ></v-text-field>
-              <ValidationProvider
-                v-slot="{ errors }"
-                name="Pricing"
-                :rules="'required|numeric'"
-              >
-                <v-text-field
-                  v-model="form.pricing"
-                  type="number"
-                  :error-messages="errors"
+  <section class="service-form">
+    <ValidationObserver ref="observer" v-slot="{ handleSubmit }">
+      <form @submit.prevent="handleSubmit(submit)">
+        <v-card>
+          <v-card-title>General Information</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-row>
+              <v-col cols="6">
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  name="Name"
+                  :rules="'required'"
                 >
-                  <template slot="label">
-                    Pricing <span class="red--text">*</span>
-                  </template>
-                </v-text-field>
-              </ValidationProvider>
-              <ValidationProvider
-                v-slot="{ errors }"
-                name="Workforce Threshold"
-                :rules="'required|numeric'"
-              >
+                  <v-text-field v-model="form.name" :error-messages="errors">
+                    <template slot="label">
+                      Name <span class="red--text">*</span>
+                    </template>
+                  </v-text-field>
+                </ValidationProvider>
                 <v-text-field
-                  v-model="form.workforceThreshold"
-                  type="number"
-                  :error-messages="errors"
+                  v-model="form.slug"
+                  label="Url"
+                  hint="This would be used for pretty url"
+                  persistent-hint
+                  class="mb-3"
+                ></v-text-field>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  name="Pricing"
+                  :rules="'required|numeric'"
                 >
-                  <template slot="label">
-                    Workforce Threshold <span class="red--text">*</span>
-                  </template>
-                </v-text-field>
-              </ValidationProvider>
-            </v-col>
-            <v-col cols="6">
-              <v-row class="mb-2">
-                <v-col class="py-0">
-                  <v-switch
-                    v-model="form.viewInStore"
-                    label="Show in Store?"
-                    color="success"
-                  ></v-switch>
-                </v-col>
-                <v-col class="pa-0">
-                  <v-switch
-                    v-model="form.enquireOnly"
-                    label="Set as Enquiry Only"
-                    color="success"
-                    hint="If set to yes, this service cannot be purchased"
-                    persistent-hint
-                  ></v-switch>
-                </v-col>
-              </v-row>
-              <v-autocomplete
-                v-model="form.department"
-                :items="departments"
-                hide-no-data
-                item-text="name"
-                item-value="_id"
-                label="Department"
-                placeholder="Select Department"
-              ></v-autocomplete>
-              <v-autocomplete
-                v-model="form.projectManager"
-                :items="users"
-                hide-no-data
-                item-text="fullName"
-                item-value="_id"
-                label="Product Manager"
-                placeholder="Select Product Manager"
-              ></v-autocomplete>
-              <v-autocomplete
-                v-model="form.tags"
-                :items="tags"
-                multiple
-                chips
-                deletable-chips
-                hide-selected
-                hide-no-data
-                label="Tags"
-              >
-                <template slot="append-outer">
-                  <v-btn
-                    fab
-                    x-small
-                    color="primary"
-                    @click.prevent="$refs.addTagFormModal.show()"
+                  <v-text-field
+                    v-model="form.pricing"
+                    type="number"
+                    :error-messages="errors"
                   >
-                    <v-icon>mdi-plus</v-icon>
-                  </v-btn>
-                </template>
-              </v-autocomplete>
-              <add-tag-form-modal ref="addTagFormModal" @save="updateTags" />
-            </v-col>
-            <v-col cols="12" class="py-0">
-              <v-text-field
-                v-model="form.shortDescription"
-                label="Short Description"
-              >
-              </v-text-field>
-              <p class="my-2">Description</p>
-              <vue-editor v-model="form.description"></vue-editor>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-
-      <v-card class="mt-5">
-        <v-card-title>Images</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-row>
-            <v-col cols="12">
-              <v-alert prominent text type="info">
-                First image would be selected as a featured image
-              </v-alert>
-              <VueFileAgent
-                ref="vueFileAgent"
-                v-model="fileRecords"
-                :theme="'grid'"
-                multiple
-                deletable
-                sortable="handle"
-                meta
-                :accept="'image/*'"
-                :max-size="'10MB'"
-                :max-files="14"
-                :help-text="'Choose images'"
-                :error-text="{
-                  type: 'Invalid file type. Only images Allowed',
-                  size: 'Files should not exceed 10MB in size',
-                }"
-                @select="filesSelected($event)"
-                @beforedelete="onBeforeDelete($event)"
-                @delete="fileDeleted($event)"
-              ></VueFileAgent>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-      <v-card class="mt-5">
-        <v-card-title>Videos</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-row>
-            <v-col cols="12">
-              <no-data-message message="No Video available" />
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-      <v-card class="mt-5">
-        <v-card-title>
-          Attributes
-          <v-spacer></v-spacer>
-          <v-btn
-            small
-            class="ml-2"
-            color="primary"
-            @click.prevent="$refs.productAttributeFormModal.show()"
-          >
-            <v-icon left>mdi-plus</v-icon> New Attribute
-          </v-btn>
-        </v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-row>
-            <v-col cols="12">
-              <v-data-table
-                :headers="productAttributeTableHeader"
-                :items="form.attributes"
-              >
-                <template slot="item.action" slot-scope="row">
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        small
-                        icon
-                        v-bind="attrs"
-                        color="primary"
-                        v-on="on"
-                        @click.prevent="$refs.productAttributeFormModal.show(row.item, false)"
-                      >
-                        <v-icon>mdi-square-edit-outline</v-icon>
-                      </v-btn>
+                    <template slot="label">
+                      Pricing <span class="red--text">*</span>
                     </template>
-                    <span>Edit this item</span>
-                  </v-tooltip>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        small
-                        icon
-                        v-bind="attrs"
-                        color="error"
-                        v-on="on"
-                        @click.prevent="deleteAttribute(row.item)"
-                      >
-                        <v-icon>mdi-close</v-icon>
-                      </v-btn>
+                  </v-text-field>
+                </ValidationProvider>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  name="Workforce Threshold"
+                  :rules="'required|numeric'"
+                >
+                  <v-text-field
+                    v-model="form.workforceThreshold"
+                    type="number"
+                    :error-messages="errors"
+                  >
+                    <template slot="label">
+                      Workforce Threshold <span class="red--text">*</span>
                     </template>
-                    <span>Delete this item</span>
-                  </v-tooltip>
-                </template>
-              </v-data-table>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-      <v-card class="mt-5">
-        <v-card-title>SEO</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-row>
-            <v-col cols="6">
-              <v-text-field
-                v-model="form.seoTitle"
-                label="SEO Title"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="6">
-              <v-text-field
-                v-model="form.seoKeywords"
-                label="SEO Keywords"
-                hint="Enter keywords related to your form."
-                persistent-hint
-                class="mb-3"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12">
-              <v-textarea
-                v-model="form.seoDescription"
-                hint="Type a description that summarizes your form.."
-                persistent-hint
-                class="mb-5"
-                label="SEO Description"
-              ></v-textarea>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
+                  </v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="6">
+                <v-row class="mb-2">
+                  <v-col class="py-0">
+                    <v-switch
+                      v-model="form.viewInStore"
+                      label="Show in Store?"
+                      color="success"
+                    ></v-switch>
+                  </v-col>
+                  <v-col class="pa-0">
+                    <v-switch
+                      v-model="form.enquireOnly"
+                      label="Set as Enquiry Only"
+                      color="success"
+                      hint="If set to yes, this service cannot be purchased"
+                      persistent-hint
+                    ></v-switch>
+                  </v-col>
+                </v-row>
+                <v-autocomplete
+                  v-model="form.department"
+                  :items="departments"
+                  hide-no-data
+                  item-text="name"
+                  item-value="_id"
+                  label="Department"
+                  placeholder="Select Department"
+                ></v-autocomplete>
+                <v-autocomplete
+                  v-model="form.projectManager"
+                  :items="users"
+                  hide-no-data
+                  item-text="fullName"
+                  item-value="_id"
+                  label="Product Manager"
+                  placeholder="Select Product Manager"
+                ></v-autocomplete>
+                <v-autocomplete
+                  v-model="form.tags"
+                  :items="tags"
+                  multiple
+                  chips
+                  deletable-chips
+                  hide-selected
+                  hide-no-data
+                  label="Tags"
+                >
+                  <template slot="append-outer">
+                    <v-btn
+                      fab
+                      x-small
+                      color="primary"
+                      @click.prevent="$refs.addTagFormModal.show()"
+                    >
+                      <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                  </template>
+                </v-autocomplete>
+              </v-col>
+              <v-col cols="12" class="py-0">
+                <v-text-field
+                  v-model="form.shortDescription"
+                  label="Short Description"
+                >
+                </v-text-field>
+                <p class="my-2">Description</p>
+                <vue-editor v-model="form.description"></vue-editor>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
 
-      <div class="mt-5">
-        <v-btn @click.prevent="back">cancel</v-btn>
-        <v-btn color="primary" type="submit" class="float-right">save</v-btn>
-      </div>
-    </form>
+        <v-card class="mt-5">
+          <v-card-title>Images</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-row>
+              <v-col cols="12">
+                <v-alert prominent text type="info">
+                  First image would be selected as a featured image
+                </v-alert>
+                <VueFileAgent
+                  ref="vueFileAgent"
+                  v-model="fileRecords"
+                  :theme="'grid'"
+                  multiple
+                  deletable
+                  sortable="handle"
+                  meta
+                  :accept="'image/*'"
+                  :max-size="'10MB'"
+                  :max-files="14"
+                  :help-text="'Choose images'"
+                  :error-text="{
+                    type: 'Invalid file type. Only images Allowed',
+                    size: 'Files should not exceed 10MB in size',
+                  }"
+                  @select="filesSelected($event)"
+                  @beforedelete="onBeforeDelete($event)"
+                  @delete="fileDeleted($event)"
+                ></VueFileAgent>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+        <v-card class="mt-5">
+          <v-card-title>Videos</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-row>
+              <v-col cols="12">
+                <no-data-message message="No Video available" />
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+        <v-card class="mt-5">
+          <v-card-title>
+            Attributes
+            <v-spacer></v-spacer>
+            <v-btn
+              small
+              class="ml-2"
+              color="primary"
+              @click.prevent="$refs.productAttributeFormModal.show()"
+            >
+              <v-icon left>mdi-plus</v-icon> New Attribute
+            </v-btn>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-row>
+              <v-col cols="12">
+                <v-data-table
+                  :headers="productAttributeTableHeader"
+                  :items="form.attributes"
+                >
+                  <template slot="item.action" slot-scope="row">
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          small
+                          icon
+                          v-bind="attrs"
+                          color="primary"
+                          v-on="on"
+                          @click.prevent="
+                            $refs.productAttributeFormModal.show(
+                              row.item,
+                              false
+                            )
+                          "
+                        >
+                          <v-icon>mdi-square-edit-outline</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Edit this item</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          small
+                          icon
+                          v-bind="attrs"
+                          color="error"
+                          v-on="on"
+                          @click.prevent="deleteAttribute(row.item)"
+                        >
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Delete this item</span>
+                    </v-tooltip>
+                  </template>
+                </v-data-table>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+        <v-card class="mt-5">
+          <v-card-title>SEO</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="form.seoTitle"
+                  label="SEO Title"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="form.seoKeywords"
+                  label="SEO Keywords"
+                  hint="Enter keywords related to your form."
+                  persistent-hint
+                  class="mb-3"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-textarea
+                  v-model="form.seoDescription"
+                  hint="Type a description that summarizes your form.."
+                  persistent-hint
+                  class="mb-5"
+                  label="SEO Description"
+                ></v-textarea>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
 
+        <div class="mt-5">
+          <v-btn @click.prevent="back">cancel</v-btn>
+          <v-btn color="primary" type="submit" class="float-right">save</v-btn>
+        </div>
+      </form>
+    </ValidationObserver>
+
+    <add-tag-form-modal ref="addTagFormModal" @save="updateTags" />
     <product-attribute-form-modal
       ref="productAttributeFormModal"
       :current-product-attributes="form.attributes"
       @update="updateProductAttribute"
     />
-  </ValidationObserver>
+  </section>
 </template>
 <script>
 import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
-import _find from 'lodash/find'
 import _filter from 'lodash/filter'
 import _forEach from 'lodash/forEach'
 import { VueEditor } from 'vue2-editor'
