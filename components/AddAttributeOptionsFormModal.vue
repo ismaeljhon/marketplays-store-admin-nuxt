@@ -7,7 +7,7 @@
         <v-row>
           <v-col cols="12">
             <ValidationObserver
-              ref="attributeOptionsObserver"
+              ref="observer"
               v-slot="{ handleSubmit }"
             >
               <form @submit.prevent="handleSubmit(submit)">
@@ -73,7 +73,7 @@ export default {
         },
         dialog: false,
       })
-      this.$refs.attributeOptionsObserver.reset()
+      this.$refs.observer.reset()
     },
   },
 }
