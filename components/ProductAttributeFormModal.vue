@@ -144,7 +144,6 @@ export default {
       this.reset()
     },
     updateAttributeOptions(option) {
-      console.log(option)
       this.form.options.push(option)
       this.attributeOptions.push(option)
     },
