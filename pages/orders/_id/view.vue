@@ -125,7 +125,9 @@ export default {
               orderlineNumber
               subscription {
                 _id
-                subscriptionType
+                subscriptionType {
+                  name
+                }
                 services {
                   _id
                   name

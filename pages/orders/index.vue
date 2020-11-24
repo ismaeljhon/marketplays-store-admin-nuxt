@@ -61,6 +61,14 @@
         :server-items-length="itemsCount"
         @input="afterSelectedEventsOnTableList"
       >
+        <template slot="item.order" slot-scope="row">
+          {{ row.item.orderNumber }}
+        </template>
+        <template slot="item.subscriptions" slot-scope="row">
+          <div v-for="(item, index) in row.item.orderlines" :key="index">
+            - {{ item.subscription.subscriptionType.name }}
+          </div>
+        </template>
         <template slot="item.customer" slot-scope="row">
           <customer-details :customer="row.item.customer" />
         </template>
@@ -97,12 +105,18 @@ export default {
   data: () => ({
     search: null,
     headers: [
-      { text: 'Order #', align: 'start', value: 'orderNumber' },
-      { text: 'Customer', align: 'start', value: 'customer' },
+      { text: 'Order', align: 'start', value: 'order', width: '150px' },
+      { text: 'Customer', align: 'start', value: 'customer', width: '300px' },
       { text: 'Total', align: 'start', value: 'totalAmount' },
-      { text: 'Created', align: 'start', value: 'created' },
-      { text: 'Modified', align: 'start', value: 'changed' },
-      { text: 'Actions', align: 'start', sortable: false, value: 'action' },
+      { text: 'Created', align: 'start', value: 'created', width: '175px' },
+      { text: 'Modified', align: 'start', value: 'changed', width: '175px' },
+      {
+        text: 'Actions',
+        align: 'start',
+        sortable: false,
+        value: 'action',
+        width: '80px',
+      },
     ],
     tableParams: {
       model: 'orders',
@@ -110,6 +124,13 @@ export default {
         {
           _id
           orderNumber
+          orderlines {
+            subscription {
+              subscriptionType {
+                name
+              }
+            }
+          }
           customer {
             name
             email
