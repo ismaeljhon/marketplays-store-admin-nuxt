@@ -97,7 +97,7 @@
             </v-card-text>
           </v-card>
           <v-btn
-            class="mt-3"
+            class="mt-5"
             small
             color="primary"
             outlined
@@ -108,7 +108,7 @@
         </v-col>
       </v-row>
 
-      <div class="mt-5">
+      <div class="mt-10">
         <v-btn @click.prevent="back">cancel</v-btn>
         <v-btn color="primary" type="submit" class="float-right">save</v-btn>
       </div>

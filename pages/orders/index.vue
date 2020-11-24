@@ -3,7 +3,7 @@
     <v-card-title>
       <v-row dense>
         <v-col cols="5">
-          <h3 class="mr-2"><v-icon left>mdi-domain</v-icon> Orders</h3>
+          <h3 class="mr-2"><v-icon left>mdi-cart-outline</v-icon> Orders</h3>
         </v-col>
         <v-col cols="7" class="text-right">
           <download-csv

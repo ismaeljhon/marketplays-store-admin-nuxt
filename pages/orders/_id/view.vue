@@ -60,17 +60,17 @@
                         <td>{{ orderlineItem.orderlineNumber }}</td>
                         <td>
                           <p class="mt-5">
-                            <strong>Subscription Type: </strong>
-                            {{ orderlineItem.subscription.subscriptionType }}
+                            {{
+                              orderlineItem.subscription.subscriptionType.name
+                            }}
                           </p>
-                          <strong>Services: </strong>
                           <p
                             v-for="serviceItem in orderlineItem.subscription
                               .services"
                             :key="serviceItem._id"
                             class="my-0"
                           >
-                            {{ serviceItem.name }}
+                            - {{ serviceItem.name }}
                           </p>
                           <br />
                         </td>
