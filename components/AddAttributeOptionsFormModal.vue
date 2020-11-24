@@ -6,10 +6,7 @@
       <v-card-text>
         <v-row>
           <v-col cols="12">
-            <ValidationObserver
-              ref="observer"
-              v-slot="{ handleSubmit }"
-            >
+            <ValidationObserver ref="observer" v-slot="{ handleSubmit }">
               <form @submit.prevent="handleSubmit(submit)">
                 <ValidationProvider
                   v-slot="{ errors }"
@@ -39,10 +36,17 @@
 </template>
 <script>
 import _assign from 'lodash/assign'
+import _find from 'lodash/find'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
   name: 'add-attribute-options-form-modal',
+  props: {
+    currentProductAttributeOptions: {
+      type: Array,
+      default: null,
+    },
+  },
   data: () => ({
     dialog: false,
     form: {
@@ -58,6 +62,19 @@ export default {
       this.form.code = `opt-${shortUuid.generate()}`
     },
     submit() {
+      if (
+        _find(this.currentProductAttributeOptions, (o) => {
+          return o.name === this.form.name
+        })
+      ) {
+        // eslint-disable-next-line no-undef
+        return swal({
+          title: 'Error',
+          icon: 'error',
+          text: 'Option name already exists on this Attribute',
+        })
+      }
+
       this.$emit('update', this.form)
       this.reset()
     },

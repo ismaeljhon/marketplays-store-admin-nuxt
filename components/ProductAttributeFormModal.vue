@@ -63,6 +63,7 @@
     </ValidationObserver>
     <add-attribute-options-form-modal
       ref="addAttributeOptionsFormModal"
+      :current-product-attribute-options="form.options"
       @update="updateAttributeOptions"
     />
   </v-dialog>
