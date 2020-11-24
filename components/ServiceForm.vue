@@ -194,6 +194,9 @@
                   :headers="productAttributeTableHeader"
                   :items="form.attributes"
                 >
+                  <template slot="item.options" slot-scope="row">
+                    {{ row.item.options | concat_names }}
+                  </template>
                   <template slot="item.action" slot-scope="row">
                     <v-tooltip top>
                       <template v-slot:activator="{ on, attrs }">
@@ -203,12 +206,7 @@
                           v-bind="attrs"
                           color="primary"
                           v-on="on"
-                          @click.prevent="
-                            $refs.productAttributeFormModal.show(
-                              row.item,
-                              false
-                            )
-                          "
+                          @click.prevent="$refs.productAttributeFormModal.show(row.item, false)"
                         >
                           <v-icon>mdi-square-edit-outline</v-icon>
                         </v-btn>
@@ -519,8 +517,19 @@ export default {
       if (!itemFound) this.form.attributes.push(attribute)
     },
     deleteAttribute(item) {
-      this.form.attributes = _filter(this.form.attributes, (i) => {
-        return item.code !== i.code
+      // eslint-disable-next-line no-undef
+      swal({
+        title: 'Are you sure?',
+        text: `This will affect the variant tables also, and your unsaved work will be lost.`,
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.form.attributes = _filter(this.form.attributes, (i) => {
+            return item.code !== i.code
+          })
+        }
       })
     },
   },

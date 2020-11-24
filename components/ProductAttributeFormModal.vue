@@ -146,6 +146,7 @@ export default {
     updateAttributeOptions(option) {
       this.form.options.push(option)
       this.attributeOptions.push(option)
+      this.$refs.observer.reset()
     },
   },
 }

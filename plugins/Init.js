@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import Vue from 'vue'
 import _capitalize from 'lodash/capitalize'
+import _map from 'lodash/map'
 import _upperCase from 'lodash/upperCase'
 import VueCurrencyFilter from 'vue-currency-filter'
 import * as rules from 'vee-validate/dist/rules'
@@ -70,6 +71,7 @@ Vue.filter('uppercase', (value) => {
 Vue.filter('first_of_array', (value) => {
   return value[0]
 })
-Vue.filter('join', (value) => {
-  return value.join(', ')
+Vue.filter('concat_names', (value, key = 'name', delimiter = ', ') => {
+  const names = _map(value, (o) => o.name)
+  return names.join(delimiter)
 })

@@ -55,7 +55,7 @@ export default {
       this.dialog = true
 
       const shortUuid = require('short-uuid')
-      this.form.code = `attrib-${shortUuid.generate()}`
+      this.form.code = `opt-${shortUuid.generate()}`
     },
     submit() {
       this.$emit('update', this.form)
