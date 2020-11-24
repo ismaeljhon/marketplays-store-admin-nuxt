@@ -61,9 +61,6 @@
         :server-items-length="itemsCount"
         @input="afterSelectedEventsOnTableList"
       >
-        <template slot="item.pricing" slot-scope="row">
-          {{ row.item.pricing | currency }}
-        </template>
         <template slot="item.teamLead" slot-scope="row">
           {{ row.item.teamLead ? row.item.teamLead.fullName : '-' }}
         </template>
@@ -108,7 +105,6 @@ export default {
     headers: [
       { text: 'Code', align: 'start', value: 'code', width: '100px' },
       { text: 'Name', align: 'start', value: 'name' },
-      { text: 'Pricing', align: 'start', value: 'pricing' },
       { text: 'Team Lead', align: 'start', value: 'teamLead' },
       {
         text: '',
@@ -125,7 +121,6 @@ export default {
           _id
           name
           code
-          pricing
           teamLead {
             fullName
           }
@@ -142,6 +137,7 @@ export default {
   },
   methods: {
     deleteItems(items) {
+      // eslint-disable-next-line no-undef
       swal({
         title: 'Are you sure?',
         text: 'You will not be able to recover this one',
@@ -153,6 +149,7 @@ export default {
           const result = await this.deleteMutation('Department', items._id)
 
           if (result) {
+            // eslint-disable-next-line no-undef
             swal({
               title: 'Success',
               icon: 'success',

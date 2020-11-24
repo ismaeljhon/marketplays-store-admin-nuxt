@@ -28,7 +28,6 @@ export default {
             code
             slug
             description
-            pricing
             seoTitle
             seoDescription
             seoKeywords

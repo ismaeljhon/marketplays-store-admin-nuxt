@@ -43,21 +43,6 @@
             persistent-hint
             class="mb-3"
           ></v-text-field>
-          <ValidationProvider
-            v-slot="{ errors }"
-            name="Pricing"
-            :rules="'required|numeric'"
-          >
-            <v-text-field
-              v-model="form.pricing"
-              type="number"
-              :error-messages="errors"
-            >
-              <template slot="label">
-                Pricing <span class="red--text">*</span>
-              </template>
-            </v-text-field>
-          </ValidationProvider>
           <v-textarea
             v-model="form.description"
             label="Description"
@@ -129,7 +114,6 @@ export default {
       code: null,
       description: null,
       slug: null,
-      pricing: null,
       seoTitle: null,
       seoKeywords: null,
       seoDescription: null,
@@ -155,7 +139,6 @@ export default {
           code: null,
           description: null,
           slug: null,
-          pricing: null,
           seoTitle: null,
           seoKeywords: null,
           seoDescription: null,
@@ -174,7 +157,6 @@ export default {
         'code',
         'description',
         'slug',
-        'pricing',
         'seoTitle',
         'seoKeywords',
         'seoDescription',
