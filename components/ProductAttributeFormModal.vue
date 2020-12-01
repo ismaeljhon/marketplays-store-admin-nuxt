@@ -33,6 +33,7 @@
                 hide-selected
                 hide-no-data
                 item-text="name"
+                return-object
                 :error-messages="errors"
               >
                 <template slot="label">
@@ -111,6 +112,10 @@ export default {
 
       _assign(this.form, JSON.parse(JSON.stringify(item)))
 
+      if (!isCreate && !this.attributeOptions.length) {
+        this.attributeOptions = this.item.options
+      }
+
       if (isCreate) this.form.code = `attrib-${shortUuid.generate()}`
     },
     reset() {
@@ -129,6 +134,7 @@ export default {
     },
     submit() {
       if (
+        this.isCreate &&
         _find(this.currentProductAttributes, (o) => {
           return o.name === this.form.name
         })
