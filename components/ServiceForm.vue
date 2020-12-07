@@ -61,7 +61,7 @@
                 <v-row class="mb-2">
                   <v-col class="py-0">
                     <v-switch
-                      v-model="form.viewInStore"
+                      v-model="form.showInStore"
                       label="Show in Store?"
                       color="success"
                     ></v-switch>
@@ -398,7 +398,7 @@ export default {
       shortDescription: null,
       pricing: null,
       enquireOnly: false,
-      viewInStore: true,
+      showInStore: true,
       tags: [],
       slug: null,
       workforceThreshold: 100,
@@ -475,7 +475,7 @@ export default {
           shortDescription: null,
           pricing: null,
           enquireOnly: false,
-          viewInStore: true,
+          showInStore: true,
           tags: [],
           slug: null,
           workforceThreshold: 100,
@@ -499,7 +499,7 @@ export default {
         'shortDescription',
         'pricing',
         'enquireOnly',
-        'viewInStore',
+        'showInStore',
         'tags',
         'slug',
         'workforceThreshold',
@@ -512,7 +512,7 @@ export default {
         'variants',
       ])
       // eslint-disable-next-line no-console
-      return console.log(allowedItems)
+      // return console.log(allowedItems)
 
       // eslint-disable-next-line no-unreachable
       let result = null
