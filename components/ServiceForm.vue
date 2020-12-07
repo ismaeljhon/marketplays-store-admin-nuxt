@@ -60,15 +60,10 @@
               <v-col cols="6">
                 <v-row class="mb-2">
                   <v-col class="py-0">
-                    <v-switch
-                      v-model="form.showInStore"
-                      label="Show in Store?"
-                      color="success"
-                    ></v-switch>
+                    <v-switch label="Show in Store?" color="success"></v-switch>
                   </v-col>
                   <v-col class="pa-0">
                     <v-switch
-                      v-model="form.enquireOnly"
                       label="Set as Enquiry Only"
                       color="success"
                       hint="If set to yes, this service cannot be purchased"
@@ -602,7 +597,7 @@ export default {
           name: variant.name,
           description: null,
           pricing: 0.0,
-          isEnquiry: false,
+          // isEnquiry: false,
           attributeData: variant.attributeData,
         }
       })
