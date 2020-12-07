@@ -72,6 +72,7 @@
 <script>
 import _assign from 'lodash/assign'
 import _find from 'lodash/find'
+
 export default {
   // eslint-disable-next-line vue/name-property-casing
   name: 'product-attribute-form-modal',

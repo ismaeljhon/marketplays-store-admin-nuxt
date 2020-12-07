@@ -181,7 +181,7 @@
               small
               class="ml-2"
               color="primary"
-              @click.prevent="$refs.productAttributeFormModal.show()"
+              @click.prevent="showAttributeModal()"
             >
               <v-icon left>mdi-plus</v-icon> New Attribute
             </v-btn>
@@ -206,13 +206,71 @@
                           v-bind="attrs"
                           color="primary"
                           v-on="on"
-                          @click.prevent="$refs.productAttributeFormModal.show(row.item, false)"
+                          @click.prevent="showAttributeModal(row.item, false)"
                         >
                           <v-icon>mdi-square-edit-outline</v-icon>
                         </v-btn>
                       </template>
                       <span>Edit this item</span>
                     </v-tooltip>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          small
+                          icon
+                          v-bind="attrs"
+                          color="error"
+                          v-on="on"
+                          @click.prevent="deleteAttribute(row.item)"
+                        >
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Delete this item</span>
+                    </v-tooltip>
+                  </template>
+                </v-data-table>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+        <v-card class="mt-5">
+          <v-card-title>
+            Variants
+            <v-spacer></v-spacer>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-row>
+              <v-col cols="12">
+                <v-data-table
+                  :headers="productVariantsTableHeader"
+                  :items="form.variants"
+                >
+                  <template slot="item.pricing" slot-scope="row">
+                    <ValidationProvider
+                      v-slot="{ errors }"
+                      :name="`${row.item.name} pricing`"
+                      :rules="'required|min:1|numeric'"
+                    >
+                      <v-text-field
+                        v-model="row.item.pricing"
+                        :error-messages="errors"
+                        type="number"
+                      >
+                        <template slot="label">
+                          Pricing <span class="red--text">*</span>
+                        </template>
+                      </v-text-field>
+                    </ValidationProvider>
+                  </template>
+                  <template slot="item.description" slot-scope="row">
+                    <v-text-field v-model="row.item.description"></v-text-field>
+                  </template>
+                  <template slot="item.isEnquiry" slot-scope="row">
+                    <v-switch v-model="row.item.isEnquiry"></v-switch>
+                  </template>
+                  <template slot="item.action" slot-scope="row">
                     <v-tooltip top>
                       <template v-slot:activator="{ on, attrs }">
                         <v-btn
@@ -375,6 +433,24 @@ export default {
         width: '150px',
       },
     ],
+    productVariantsTableHeader: [
+      { text: 'Name', align: 'start', value: 'name', width: '200px' },
+      {
+        text: 'Description',
+        align: 'start',
+        value: 'description',
+        width: '300px',
+      },
+      { text: 'Pricing (*)', align: 'start', value: 'pricing', width: '200px' },
+      { text: 'Set as Enquiry Only', align: 'start', value: 'isEnquiry' },
+      {
+        text: 'Actions',
+        align: 'start',
+        sortable: false,
+        value: 'action',
+        width: '150px',
+      },
+    ],
   }),
   watch: {
     service(value) {
@@ -387,6 +463,9 @@ export default {
     back() {
       this.$router.push(this.previousPage)
       this.resetForm()
+    },
+    showAttributeModal(item = {}, isCreate = true) {
+      this.$refs.productAttributeFormModal.show(item, isCreate)
     },
     resetForm() {
       _assign(this, {
@@ -505,7 +584,7 @@ export default {
         this.deleteUploadedFile(fileRecord)
       }
     },
-    updateProductAttribute(attribute) {
+    async updateProductAttribute(attribute) {
       // eslint-disable-next-line no-console
       let itemFound = false
       _forEach(this.form.attributes, (item) => {
@@ -515,6 +594,18 @@ export default {
         }
       })
       if (!itemFound) this.form.attributes.push(attribute)
+
+      const variantsData = await this.generateVariantsData(this.form.attributes)
+
+      this.form.variants = variantsData.map((variant) => {
+        return {
+          name: variant.name,
+          description: null,
+          pricing: 0.0,
+          isEnquiry: false,
+          attributeData: variant.attributeData,
+        }
+      })
     },
     deleteAttribute(item) {
       // eslint-disable-next-line no-undef
