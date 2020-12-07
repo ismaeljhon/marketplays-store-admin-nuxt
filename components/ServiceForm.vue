@@ -24,38 +24,42 @@
                   label="Url"
                   hint="This would be used for pretty url"
                   persistent-hint
-                  class="mb-3"
+                  class="mb-4"
                 ></v-text-field>
+                <v-autocomplete
+                  v-model="form.department"
+                  :items="departments"
+                  hide-no-data
+                  item-text="name"
+                  item-value="_id"
+                  label="Department"
+                  placeholder="Select Department"
+                ></v-autocomplete>
                 <ValidationProvider
                   v-slot="{ errors }"
-                  name="Pricing"
-                  :rules="'required|numeric'"
+                  name="Code"
+                  :rules="'required'"
                 >
                   <v-text-field
-                    v-model="form.pricing"
-                    type="number"
+                    v-model="form.code"
                     :error-messages="errors"
+                    class="mb-3"
                   >
+                    <template v-if="serviceCodePrefix" slot="prepend-inner">
+                      <v-btn depressed class="mr-2">
+                        {{ serviceCodePrefix }}
+                      </v-btn>
+                    </template>
                     <template slot="label">
-                      Pricing <span class="red--text">*</span>
+                      Service code <span class="red--text">*</span>
                     </template>
                   </v-text-field>
                 </ValidationProvider>
-                <ValidationProvider
-                  v-slot="{ errors }"
-                  name="Workforce Threshold"
-                  :rules="'required|numeric'"
+                <v-text-field
+                  v-model="form.shortDescription"
+                  label="Short Description"
                 >
-                  <v-text-field
-                    v-model="form.workforceThreshold"
-                    type="number"
-                    :error-messages="errors"
-                  >
-                    <template slot="label">
-                      Workforce Threshold <span class="red--text">*</span>
-                    </template>
-                  </v-text-field>
-                </ValidationProvider>
+                </v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-row class="mb-2">
@@ -71,15 +75,22 @@
                     ></v-switch>
                   </v-col>
                 </v-row>
-                <v-autocomplete
-                  v-model="form.department"
-                  :items="departments"
-                  hide-no-data
-                  item-text="name"
-                  item-value="_id"
-                  label="Department"
-                  placeholder="Select Department"
-                ></v-autocomplete>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  name="Pricing"
+                  :rules="'required|numeric'"
+                >
+                  <v-text-field
+                    v-model="form.pricing"
+                    type="number"
+                    :error-messages="errors"
+                    class="mb-4"
+                  >
+                    <template slot="label">
+                      Pricing <span class="red--text">*</span>
+                    </template>
+                  </v-text-field>
+                </ValidationProvider>
                 <v-autocomplete
                   v-model="form.projectManager"
                   :items="users"
@@ -89,6 +100,21 @@
                   label="Product Manager"
                   placeholder="Select Product Manager"
                 ></v-autocomplete>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  name="Workforce Threshold"
+                  :rules="'required|numeric'"
+                >
+                  <v-text-field
+                    v-model="form.workforceThreshold"
+                    type="number"
+                    :error-messages="errors"
+                  >
+                    <template slot="label">
+                      Workforce Threshold <span class="red--text">*</span>
+                    </template>
+                  </v-text-field>
+                </ValidationProvider>
                 <v-autocomplete
                   v-model="form.tags"
                   :items="tags"
@@ -111,12 +137,7 @@
                   </template>
                 </v-autocomplete>
               </v-col>
-              <v-col cols="12" class="py-0">
-                <v-text-field
-                  v-model="form.shortDescription"
-                  label="Short Description"
-                >
-                </v-text-field>
+              <v-col cols="12">
                 <p class="my-2">Description</p>
                 <vue-editor v-model="form.description"></vue-editor>
               </v-col>
@@ -340,6 +361,7 @@ import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
 import _filter from 'lodash/filter'
 import _forEach from 'lodash/forEach'
+import _find from 'lodash/find'
 import { VueEditor } from 'vue2-editor'
 
 export default {
@@ -368,6 +390,7 @@ export default {
           departments {
             _id
             name
+            code
           }
         }
       `,
@@ -447,6 +470,15 @@ export default {
       },
     ],
   }),
+  computed: {
+    serviceCodePrefix() {
+      const departmentSelected = _find(
+        this.departments,
+        (o) => o._id === this.form.department
+      )
+      return departmentSelected ? `${departmentSelected.code}-` : null
+    },
+  },
   watch: {
     service(value) {
       if (value) {
