@@ -85,7 +85,6 @@ export default {
   data: () => ({
     dialog: false,
     form: {
-      code: null,
       name: null,
       description: null,
       options: [],
@@ -103,7 +102,6 @@ export default {
   },
   methods: {
     show(item = {}, isCreate = true) {
-      const shortUuid = require('short-uuid')
 
       _assign(this, {
         dialog: true,
@@ -116,14 +114,11 @@ export default {
       if (!isCreate && !this.attributeOptions.length) {
         this.attributeOptions = this.item.options
       }
-
-      if (isCreate) this.form.code = `attrib-${shortUuid.generate()}`
     },
     reset() {
       _assign(this, {
         dialog: false,
         form: {
-          code: null,
           name: null,
           description: null,
           options: [],

@@ -520,8 +520,10 @@ export default {
     async submit() {
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
+      this.form.code = this.serviceCodePrefix + this.form.code
       const allowedItems = this.getAllowedItems(this.form, [
         'name',
+        'code',
         'description',
         'shortDescription',
         'pricing',
@@ -615,7 +617,7 @@ export default {
       // eslint-disable-next-line no-console
       let itemFound = false
       _forEach(this.form.attributes, (item) => {
-        if (attribute.code === item.code) {
+        if (attribute.name === item.name) {
           _assign(item, attribute)
           itemFound = true
         }

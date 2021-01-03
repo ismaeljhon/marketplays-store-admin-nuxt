@@ -51,15 +51,11 @@ export default {
     dialog: false,
     form: {
       name: null,
-      code: null,
     },
   }),
   methods: {
     show() {
       this.dialog = true
-
-      const shortUuid = require('short-uuid')
-      this.form.code = `opt-${shortUuid.generate()}`
     },
     submit() {
       if (
@@ -86,7 +82,6 @@ export default {
       _assign(this, {
         form: {
           name: null,
-          code: null,
         },
         dialog: false,
       })
