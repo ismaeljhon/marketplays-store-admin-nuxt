@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'marketPlays',
+      name: 'marketPlays Store Admin',
       script: './node_modules/nuxt/bin/nuxt.js',
       args: 'start',
       env_production: {
