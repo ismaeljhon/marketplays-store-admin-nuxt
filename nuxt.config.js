@@ -82,8 +82,6 @@ export default {
       },
     },
   },
-
-  ssr: false,
   loadingIndicator: {
     name: 'three-bounce',
     color: '#BE1E2D',
@@ -91,5 +89,7 @@ export default {
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {},
+  build: {
+    transpile: ['vee-validate/dist/rules'],
+  },
 }
