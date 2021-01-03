@@ -50,7 +50,9 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: Config.apiUrl,
+        httpEndpoint: Config[process.env.NODE_ENV]
+          ? Config[process.env.NODE_ENV].API_BASE_URL
+          : Config.dev.API_BASE_URL,
       },
     },
     defaultOptions: {
@@ -91,5 +93,13 @@ export default {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     transpile: ['vee-validate/dist/rules'],
+  },
+  env: {
+    baseUrl: Config[process.env.NODE_ENV]
+      ? Config[process.env.NODE_ENV].API_BASE_URL
+      : Config.dev.API_BASE_URL,
+  },
+  server: {
+    port: '3001',
   },
 }
