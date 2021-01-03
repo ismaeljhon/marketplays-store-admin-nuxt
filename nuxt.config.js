@@ -102,4 +102,7 @@ export default {
   server: {
     port: 3001,
   },
+  router: {
+    base: '/store-admin/',
+  },
 }
