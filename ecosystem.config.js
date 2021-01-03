@@ -41,7 +41,7 @@ module.exports = {
       host: 'staging.marketplays.app',
       ref: 'origin/staging',
       repo: 'https://github.com/ismaeljhon/marketplays-store-admin-nuxt',
-      path: '/home/marketplays/public_html/staging/main/store_admin',
+      path: '/home/marketplays/public_html/staging/store_admin',
       'pre-deploy-local': '',
       'post-deploy':
         'git pull origin staging && yarn install && yarn build && pm2 startOrRestart ecosystem.config.js --env staging',

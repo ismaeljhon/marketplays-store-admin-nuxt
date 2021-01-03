@@ -100,6 +100,6 @@ export default {
       : Config.dev.API_BASE_URL,
   },
   server: {
-    port: '3001',
+    port: 3001,
   },
 }
