@@ -53,10 +53,10 @@
           </p>
         </template>
         <template slot="item.service" slot-scope="row">
-          <p>
-            {{ row.item.subscription.subscriptionType.name }}
+          <p class="mt-3">
+            <strong>{{ row.item.subscription.subscriptionType.name }}</strong>
             <br />
-            <span v-if="row.item.service">{{ row.item.service.name }}</span>
+            <span v-if="row.item.service">- {{ row.item.service.name }}</span>
           </p>
         </template>
         <template slot="item.customer" slot-scope="row">
@@ -133,12 +133,12 @@ export default {
   data: () => ({
     search: null,
     headers: [
-      { text: 'Order #', align: 'start', value: 'orderNumber' },
+      { text: 'Order #', align: 'start', value: 'orderNumber', width: '100px' },
       {
         text: 'Service Subscription',
         align: 'start',
         value: 'service',
-        width: '300px',
+        width: '250px',
       },
       { text: 'Customer', align: 'start', value: 'customer' },
       { text: 'Last action taken', align: 'start', value: 'lastActionTaken' },
