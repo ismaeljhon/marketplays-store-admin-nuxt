@@ -25,7 +25,9 @@
 
     <v-app-bar app color="indigo" dark clipped-left>
       <!-- eslint-disable-next-line prettier/prettier -->
-      <v-app-bar-nav-icon @click.prevent="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        @click.prevent="drawer = !drawer"
+      ></v-app-bar-nav-icon>
       <v-toolbar-title> MarketPlays E-Commerce </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-menu offset-y>
@@ -74,6 +76,12 @@ export default {
         link: '/',
       },
       { key: 'orders', label: 'Orders', icon: 'cart-outline', link: '/orders' },
+      {
+        key: 'customers',
+        label: 'Customers',
+        icon: 'account-multiple',
+        link: '/customers',
+      },
       {
         key: 'departments',
         label: 'Departments',
