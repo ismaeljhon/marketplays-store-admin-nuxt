@@ -48,17 +48,20 @@
         :server-items-length="itemsCount"
       >
         <template slot="item.orderNumber" slot-scope="row">
-          {{ row.item.subscription.orderline.order.orderNumber }}
+          <p v-if="row.item.subscription.orderline.order">
+            {{ row.item.subscription.orderline.order.orderNumber }}
+          </p>
         </template>
         <template slot="item.service" slot-scope="row">
           <p>
-            {{ row.item.subscription.subscriptionType }}
+            {{ row.item.subscription.subscriptionType.name }}
             <br />
-            {{ row.item.service.name }}
+            <span v-if="row.item.service">{{ row.item.service.name }}</span>
           </p>
         </template>
         <template slot="item.customer" slot-scope="row">
           <customer-details
+            v-if="row.item.subscription.orderline.order"
             :customer="row.item.subscription.orderline.order.customer"
           />
         </template>
@@ -69,6 +72,7 @@
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
+                v-if="row.item.subscription.orderline.order"
                 small
                 v-bind="attrs"
                 color="primary"
@@ -152,7 +156,9 @@ export default {
         {
           _id
           subscription {
-            subscriptionType
+            subscriptionType {
+              name
+            }
             orderline {
               order {
                 orderNumber

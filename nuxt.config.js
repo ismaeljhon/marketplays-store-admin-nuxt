@@ -27,6 +27,7 @@ export default {
     '~/plugins/TableMixin',
     '~/plugins/GlobalMixin',
     '~/plugins/graphql',
+    { src: '~/plugins/VueEditor.js', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)

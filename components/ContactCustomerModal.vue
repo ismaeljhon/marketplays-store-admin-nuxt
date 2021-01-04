@@ -56,14 +56,10 @@
 </template>
 <script>
 import _assign from 'lodash/assign'
-import { VueEditor } from 'vue2-editor'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
   name: 'contact-customer-modal',
-  components: {
-    VueEditor,
-  },
   data: () => ({
     dialog: false,
     form: {
@@ -100,6 +96,6 @@ export default {
       // eslint-disable-next-line no-console
       console.log(this.form)
     },
-  }
+  },
 }
 </script>
