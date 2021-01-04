@@ -24,6 +24,9 @@
             </v-autocomplete>
           </ValidationProvider>
 
+          <p class="my-2">Notes</p>
+          <vue-editor v-model="form.notes"></vue-editor>
+
           <v-card v-if="customerSelected">
             <v-card-title>Customer Details</v-card-title>
             <v-divider></v-divider>
