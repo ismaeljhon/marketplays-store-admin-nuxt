@@ -106,10 +106,10 @@ export default {
     search: null,
     headers: [
       { text: 'Order', align: 'start', value: 'order', width: '150px' },
-      { text: 'Customer', align: 'start', value: 'customer', width: '300px' },
-      { text: 'Total', align: 'start', value: 'totalAmount' },
-      { text: 'Created', align: 'start', value: 'created', width: '175px' },
-      { text: 'Modified', align: 'start', value: 'changed', width: '175px' },
+      { text: 'Customer', align: 'start', value: 'customer', width: '250px' },
+      { text: 'Total', align: 'start', value: 'totalAmount', width: '120px'},
+      { text: 'Created', align: 'start', value: 'created', width: '170px' },
+      { text: 'Modified', align: 'start', value: 'changed', width: '170px' },
       {
         text: 'Actions',
         align: 'start',
