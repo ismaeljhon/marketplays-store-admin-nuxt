@@ -114,6 +114,19 @@ export default {
       },
       { key: 'divider' },
       {
+        key: 'service-requests',
+        label: 'Service Requests',
+        icon: 'phone-message-outline',
+        icon_color: 'orange darken-1',
+        link: '/service-requests',
+      },
+      {
+        key: 'admin-users',
+        label: 'Admin Users',
+        icon: 'shield-account',
+        link: '/admin-users',
+      },
+      {
         key: 'payment-integration',
         label: 'Payment Integration',
         icon: 'credit-card-sync-outline',
@@ -131,13 +144,6 @@ export default {
         label: 'Coupons',
         icon: 'ticket-percent-outline',
         disabled: true,
-      },
-      {
-        key: 'service-requests',
-        label: 'Service Requests',
-        icon: 'phone-message-outline',
-        icon_color: 'orange darken-1',
-        link: '/service-requests',
       },
     ],
   }),
