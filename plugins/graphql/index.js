@@ -1,1 +1,2 @@
+require('./query')
 require('./mutations')
