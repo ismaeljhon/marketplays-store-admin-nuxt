@@ -10,7 +10,7 @@
         <v-col cols="7" class="text-right">
           <download-csv
             class="mr-2 v-btn v-btn--depressed v-btn--flat v-btn--outlined v-btn--tile theme--light v-size--small"
-            :data="customers"
+            :data="users"
             style="cursor: pointer"
           >
             <v-icon left>mdi-download</v-icon>Export Admin Users
@@ -55,7 +55,7 @@
         v-model="tableItems.selected"
         :search="search"
         :headers="headers"
-        :items="customers"
+        :items="users"
         item-key="_id"
         loading-text="Loading please wait..."
         :loading="isLoading"
@@ -66,7 +66,7 @@
         <template slot="item.action" slot-scope="row">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <NuxtLink :to="'/customers/' + row.item._id">
+              <NuxtLink :to="'/admin-users/' + row.item._id">
                 <v-btn small icon v-bind="attrs" color="primary" v-on="on">
                   <v-icon>mdi-square-edit-outline</v-icon>
                 </v-btn>
@@ -98,13 +98,12 @@
 import gql from 'graphql-tag'
 
 export default {
-  name: 'Customers',
+  name: 'AdminUsers',
   data: () => ({
     search: null,
     headers: [
-      { text: 'Name', align: 'start', value: 'name' },
+      { text: 'Name', align: 'start', value: 'fullName' },
       { text: 'Email', align: 'start', value: 'email' },
-      { text: 'Address', align: 'start', value: 'address' },
       {
         text: '',
         align: 'start',
@@ -114,17 +113,16 @@ export default {
       },
     ],
     tableParams: {
-      model: 'customers',
+      model: 'users',
       query: gql`
         {
           _id
-          name
-          address
+          fullName
           email
         }
       `,
     },
-    customers: [],
+    users: [],
   }),
   beforeDestroy() {
     this.clearGetItems()
@@ -143,14 +141,14 @@ export default {
         dangerMode: true,
       }).then(async (willDelete) => {
         if (willDelete) {
-          const result = await this.deleteMutation('Customer', items._id)
+          const result = await this.deleteMutation('User', items._id)
 
           if (result) {
             // eslint-disable-next-line no-undef
             swal({
               title: 'Success',
               icon: 'success',
-              text: 'Customer(s) has been successfully deleted',
+              text: 'Admin User(s) has been successfully deleted',
             })
             this.getItems()
             this.itemsCount--

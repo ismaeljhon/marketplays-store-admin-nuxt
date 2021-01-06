@@ -1,19 +1,19 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <customer-form></customer-form>
+      <admin-user-form></admin-user-form>
     </v-col>
   </v-row>
 </template>
 <script>
 export default {
-  name: 'AddDepartment',
+  name: 'AddAdminUser',
   layout: 'single-page',
   mounted() {
-    this.$store.commit('setPageTitle', 'New Customer')
+    this.$store.commit('setPageTitle', 'New Admin User')
     this.$store.commit('setBackToPage', {
-      link: '/customers',
-      title: 'Customers',
+      link: '/admin-users',
+      title: 'Admin Users',
     })
   },
 }

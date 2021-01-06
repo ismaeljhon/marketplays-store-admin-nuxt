@@ -2,10 +2,10 @@
   <v-row>
     <v-col cols="12">
       <loading
-        v-if="$apollo.queries.customer.loading"
-        loading-text="Loading Customer..."
+        v-if="$apollo.queries.user.loading"
+        loading-text="Loading User..."
       />
-      <customer-form v-else :customer="customer"></customer-form>
+      <admin-user-form v-else :user="user"></admin-user-form>
     </v-col>
   </v-row>
 </template>
@@ -13,20 +13,19 @@
 import gql from 'graphql-tag'
 
 export default {
-  name: 'EditCustomer',
+  name: 'EditAdminUser',
   layout: 'single-page',
   data: () => ({
-    customer: {},
+    user: {},
   }),
   apollo: {
-    customer: {
+    user: {
       query: gql`
-        query customer($id: MongoID!) {
-          customer(_id: $id) {
+        query user($id: MongoID!) {
+          user(_id: $id) {
             _id
-            name
+            fullName
             email
-            address
           }
         }
       `,
@@ -36,20 +35,20 @@ export default {
         }
       },
       update(data) {
-        return data.customer
+        return data.user
       },
       result(response) {
         this.$store.commit(
           'setPageTitle',
-          `Edit Customer - ${response.data.customer.name}`
+          `Edit Admin User - ${response.data.user.fullName}`
         )
       },
     },
   },
   mounted() {
     this.$store.commit('setBackToPage', {
-      link: '/customers',
-      title: 'Customers',
+      link: '/admin-users',
+      title: 'Admin Users',
     })
   },
 }
