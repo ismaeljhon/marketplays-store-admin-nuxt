@@ -198,14 +198,10 @@ import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
 import _forEach from 'lodash/forEach'
 import RequiredCertificates from '@/assets/required_certificates'
-import { VueEditor } from 'vue2-editor'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
   name: 'job-form',
-  components: {
-    VueEditor,
-  },
   apollo: {
     users: {
       query: gql`
