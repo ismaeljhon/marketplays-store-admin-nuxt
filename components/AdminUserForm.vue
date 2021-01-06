@@ -27,6 +27,61 @@
               </template>
             </v-text-field>
           </ValidationProvider>
+          <v-text-field
+            v-if="isEdit"
+            v-model="form.password"
+            :error-messages="errors"
+          >
+            <template slot="label">
+              Password
+              <small>
+                (Leave this blank if you don't want to update password)
+              </small>
+            </template>
+          </v-text-field>
+          <div v-else>
+            <ValidationProvider
+              v-slot="{ errors }"
+              name="Password"
+              :rules="'required'"
+            >
+              <v-text-field v-model="form.password" :error-messages="errors">
+                <template slot="label">
+                  Password <span v-if="!isEdit" class="red--text">*</span>
+                </template>
+              </v-text-field>
+            </ValidationProvider>
+          </div>
+          <v-autocomplete
+            v-model="form.teamLeadOf"
+            :items="departments"
+            hide-no-data
+            item-text="name"
+            item-value="_id"
+            multiple
+            chips
+            deletable-chips
+          >
+            <template slot="label">
+              Team Lead of department(s):
+              <span class="red--text">*</span>
+            </template>
+          </v-autocomplete>
+          <v-autocomplete
+            v-model="form.teamLeadOf"
+            :items="services"
+            hide-no-data
+            item-text="name"
+            item-value="_id"
+            multiple
+            chips
+            deletable-chips
+          >
+            <template slot="label">
+              Product Manager of service(s):
+              <span class="red--text">*</span>
+            </template>
+          </v-autocomplete>
         </v-col>
       </v-row>
 
@@ -57,12 +112,26 @@ export default {
     form: {
       fullName: null,
       email: null,
+      password: null,
+      teamLeadOf: [],
+      projectManagerOf: [],
     },
+    departments: [],
+    services: [],
   }),
+  computed: {
+    isEdit() {
+      return this.user && this.user._id
+    },
+  },
   watch: {
     user(value) {
       if (value) this.form = value
     },
+  },
+  mounted() {
+    this.getList('departments', ['_id', 'name'])
+    this.getList('services', ['_id', 'name', 'department { name }'])
   },
   methods: {
     back() {
@@ -74,6 +143,9 @@ export default {
         form: {
           fullName: null,
           email: null,
+          password: null,
+          teamLeadOf: [],
+          projectManagerOf: [],
         },
       })
     },
@@ -81,6 +153,8 @@ export default {
       const allowedItems = this.getAllowedItems(this.form, [
         'fullName',
         'email',
+        'teamLeadOf',
+        'projectManagerOf',
       ])
 
       let result = null
