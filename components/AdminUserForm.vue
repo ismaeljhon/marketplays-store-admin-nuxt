@@ -27,11 +27,7 @@
               </template>
             </v-text-field>
           </ValidationProvider>
-          <v-text-field
-            v-if="isEdit"
-            v-model="form.password"
-            :error-messages="errors"
-          >
+          <v-text-field v-if="isEdit" v-model="form.password">
             <template slot="label">
               Password
               <small>
@@ -69,9 +65,9 @@
           </v-autocomplete>
           <v-autocomplete
             v-model="form.teamLeadOf"
-            :items="services"
+            :items="servicesWithLabel"
             hide-no-data
-            item-text="name"
+            item-text="label"
             item-value="_id"
             multiple
             chips
@@ -93,7 +89,7 @@
   </ValidationObserver>
 </template>
 <script>
-import _assign from 'lodash/assign'
+import { assign as _assign, merge as _merge } from 'lodash'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -122,6 +118,13 @@ export default {
   computed: {
     isEdit() {
       return this.user && this.user._id
+    },
+    servicesWithLabel() {
+      return this.services.map((o) => {
+        return _merge(o, {
+          label: `${o.name} (${o.department ? o.department.name : ''})`,
+        })
+      })
     },
   },
   watch: {
