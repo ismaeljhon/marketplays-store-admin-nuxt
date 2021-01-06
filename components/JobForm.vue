@@ -235,7 +235,9 @@ export default {
           serviceRequests {
             _id
             subscription {
-              subscriptionType
+              subscriptionType {
+                name
+              }
               orderline {
                 order {
                   orderNumber
@@ -259,7 +261,7 @@ export default {
         _forEach(serviceRequests, (item) => {
           outputData.push({
             _id: item._id,
-            label: `Order #: ${item.subscription.orderline.order.orderNumber} - ${item.subscription.subscriptionType} - ${item.service.name} - ${item.subscription.orderline.order.customer.name}`,
+            label: `Order #: ${item.subscription.orderline.order.orderNumber} - ${item.subscription.subscriptionType.name} - ${item.service.name} - ${item.subscription.orderline.order.customer.name}`,
           })
         })
         return outputData
