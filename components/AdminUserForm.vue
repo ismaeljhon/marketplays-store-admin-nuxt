@@ -39,11 +39,33 @@
             <ValidationProvider
               v-slot="{ errors }"
               name="Password"
-              :rules="'required'"
+              vid="password"
+              rules="required"
             >
-              <v-text-field v-model="form.password" :error-messages="errors">
+              <v-text-field
+                v-model="form.password"
+                :error-messages="errors"
+                type="password"
+              >
                 <template slot="label">
-                  Password <span v-if="!isEdit" class="red--text">*</span>
+                  Password <span class="red--text">*</span>
+                </template>
+              </v-text-field>
+            </ValidationProvider>
+
+            <ValidationProvider
+              v-slot="{ errors }"
+              name="Password confirmation"
+              vid="confirm"
+              rules="required|password:@password"
+            >
+              <v-text-field
+                v-model="form.confirmPassword"
+                :error-messages="errors"
+                type="password"
+              >
+                <template slot="label">
+                  Confirm Password <span class="red--text">*</span>
                 </template>
               </v-text-field>
             </ValidationProvider>

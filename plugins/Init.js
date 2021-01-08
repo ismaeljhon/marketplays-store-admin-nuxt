@@ -20,7 +20,7 @@ import { SlickList, SlickItem } from 'vue-slicksort'
 
 Vue.component('vfa-sortable-list', SlickList)
 Vue.component('vfa-sortable-item', SlickItem)
-Vue.use(VueFileAgent);
+Vue.use(VueFileAgent)
 Vue.component('downloadCsv', JsonCSV)
 
 Vue.use(require('vue-moment'))
@@ -49,6 +49,14 @@ for (const [rule, validation] of Object.entries(rules)) {
     ...validation,
   })
 }
+
+extend('password', {
+  params: ['target'],
+  validate(value, { target }) {
+    return value === target
+  },
+  message: 'Password confirmation did not match',
+})
 
 localize({
   en: {
