@@ -27,7 +27,7 @@
               </template>
             </v-text-field>
           </ValidationProvider>
-          <v-text-field v-if="isEdit" v-model="form.password">
+          <v-text-field v-if="isEdit" v-model="form.password" type="password">
             <template slot="label">
               Password
               <small>
@@ -43,7 +43,7 @@
               rules="required"
             >
               <v-text-field
-                v-model="form.password"
+                v-model="form.hashedPassword"
                 :error-messages="errors"
                 type="password"
               >
@@ -79,14 +79,10 @@
             multiple
             chips
             deletable-chips
-          >
-            <template slot="label">
-              Team Lead of department(s):
-              <span class="red--text">*</span>
-            </template>
-          </v-autocomplete>
+            label="Team Lead of department(s):"
+          ></v-autocomplete>
           <v-autocomplete
-            v-model="form.teamLeadOf"
+            v-model="form.projectManagerOf"
             :items="servicesWithLabel"
             hide-no-data
             item-text="label"
@@ -94,12 +90,8 @@
             multiple
             chips
             deletable-chips
-          >
-            <template slot="label">
-              Product Manager of service(s):
-              <span class="red--text">*</span>
-            </template>
-          </v-autocomplete>
+            label="Product Manager of service(s):"
+          ></v-autocomplete>
         </v-col>
       </v-row>
 
@@ -130,6 +122,7 @@ export default {
     form: {
       fullName: null,
       email: null,
+      hashedPassword: null,
       password: null,
       teamLeadOf: [],
       projectManagerOf: [],
@@ -139,7 +132,7 @@ export default {
   }),
   computed: {
     isEdit() {
-      return this.user && this.user._id
+      return Boolean(this.user && this.user._id)
     },
     servicesWithLabel() {
       return this.services.map((o) => {
@@ -151,7 +144,13 @@ export default {
   },
   watch: {
     user(value) {
-      if (value) this.form = value
+      if (value) {
+        this.form = value
+        this.form.teamLeadOf = value.teamLeadOf.map((user) => user._id)
+        this.form.projectManagerOf = value.projectManagerOf.map(
+          (deparment) => deparment._id
+        )
+      }
     },
   },
   mounted() {
@@ -168,6 +167,7 @@ export default {
         form: {
           fullName: null,
           email: null,
+          hashedPassword: null,
           password: null,
           teamLeadOf: [],
           projectManagerOf: [],
@@ -178,6 +178,7 @@ export default {
       const allowedItems = this.getAllowedItems(this.form, [
         'fullName',
         'email',
+        'hashedPassword',
         'teamLeadOf',
         'projectManagerOf',
       ])

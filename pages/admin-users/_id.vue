@@ -26,6 +26,12 @@ export default {
             _id
             fullName
             email
+            teamLeadOf {
+              _id
+            }
+            projectManagerOf {
+              _id
+            }
           }
         }
       `,
