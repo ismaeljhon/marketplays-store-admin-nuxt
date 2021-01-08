@@ -43,7 +43,7 @@
               rules="required"
             >
               <v-text-field
-                v-model="form.hashedPassword"
+                v-model="form.password"
                 :error-messages="errors"
                 type="password"
               >
@@ -122,7 +122,7 @@ export default {
     form: {
       fullName: null,
       email: null,
-      hashedPassword: null,
+      password: null,
       password: null,
       teamLeadOf: [],
       projectManagerOf: [],
@@ -167,7 +167,6 @@ export default {
         form: {
           fullName: null,
           email: null,
-          hashedPassword: null,
           password: null,
           teamLeadOf: [],
           projectManagerOf: [],
@@ -178,7 +177,7 @@ export default {
       const allowedItems = this.getAllowedItems(this.form, [
         'fullName',
         'email',
-        'hashedPassword',
+        'password',
         'teamLeadOf',
         'projectManagerOf',
       ])
@@ -187,7 +186,7 @@ export default {
       if (this.user) {
         result = await this.updateMutation('User', allowedItems, this.user._id)
       } else {
-        result = await this.createMutation('User', allowedItems)
+        result = await this.createMutation('signup', allowedItems, false)
       }
 
       if (result) {

@@ -1,6 +1,7 @@
 import gql from 'graphql-tag'
 import swal from 'sweetalert'
 import Vue from 'vue'
+import _capitalize from 'lodash/capitalize'
 
 Vue.mixin({
   methods: {
@@ -11,12 +12,15 @@ Vue.mixin({
         return this.createMutation(model, record)
       }
     },
-    async createMutation(model, record) {
+    async createMutation(model, record, addPrefix = true) {
+      const createMutationModel = addPrefix ? `createOne${model}` : model
+      const createMutationModelInput = _capitalize(model)
+
       return await this.$apollo
         .mutate({
-          mutation: gql` 
-            mutation createOne${model}($record: CreateOne${model}Input!) {
-              createOne${model}(
+          mutation: gql`
+            mutation ${createMutationModel}($record: ${createMutationModelInput}Input!) {
+              ${createMutationModel}(
                 record: $record
               ){
                 record {
@@ -30,7 +34,7 @@ Vue.mixin({
           },
         })
         .then((response) => {
-          return response.data['createOne' + model].record
+          return response.data[createMutationModel].record
         })
         .catch(() => {
           swal({
@@ -44,7 +48,7 @@ Vue.mixin({
     async updateMutation(model, record, _id) {
       return await this.$apollo
         .mutate({
-          mutation: gql` 
+          mutation: gql`
             mutation update${model}ById($_id: MongoID!, $record: UpdateById${model}Input!) {
               update${model}ById(
                 _id: $_id
@@ -82,7 +86,7 @@ Vue.mixin({
                 _id: $id
               ) {
               record {
-                _id   
+                _id
               }
               }
             }
