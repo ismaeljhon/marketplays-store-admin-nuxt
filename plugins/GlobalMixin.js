@@ -6,12 +6,9 @@ import Currencies from '~/assets/currency'
 Vue.mixin({
   methods: {
     getCurrencies() {
-      const currencies = []
-      _forEach(Object.keys(Currencies), (o) => {
-        currencies.push(Currencies[o])
+      return Object.keys(Currencies).map((code) => {
+        return Currencies[code]
       })
-
-      return currencies
     },
     getAllowedItems(item, fields) {
       const updatedItem = {}
