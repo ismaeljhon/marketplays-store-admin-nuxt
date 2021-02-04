@@ -412,6 +412,7 @@ export default {
   data: () => ({
     form: {
       name: null,
+      code: null,
       description: null,
       shortDescription: null,
       pricing: null,
@@ -482,6 +483,9 @@ export default {
   watch: {
     service(value) {
       if (value) {
+        if (value.code) {
+          value.code = value.code.split('-')[1]
+        }
         _assign(this.form, value)
       }
     },
@@ -498,6 +502,7 @@ export default {
       _assign(this, {
         form: {
           name: null,
+          code: null,
           description: null,
           shortDescription: null,
           pricing: null,

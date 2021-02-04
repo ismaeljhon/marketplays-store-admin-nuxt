@@ -24,6 +24,7 @@ export default {
         query service($id: MongoID!) {
           service(_id: $id) {
             _id
+            code
             name
             description
             shortDescription
