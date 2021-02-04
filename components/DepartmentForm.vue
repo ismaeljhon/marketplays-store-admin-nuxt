@@ -117,9 +117,7 @@ export default {
       seoTitle: null,
       seoKeywords: null,
       seoDescription: null,
-      teamLead: {
-        _id: null,
-      },
+      teamLead: null,
     },
   }),
   watch: {
@@ -142,11 +140,7 @@ export default {
           seoTitle: null,
           seoKeywords: null,
           seoDescription: null,
-          teamLead: {
-            _id: null,
-            fullName: null,
-            email: null,
-          },
+          teamLead: null,
         },
       })
     },
