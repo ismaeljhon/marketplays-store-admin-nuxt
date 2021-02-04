@@ -12,12 +12,15 @@ Vue.mixin({
         return this.createMutation(model, record)
       }
     },
-    async createMutation(model, record) {
+    async createMutation(model, record, addPrefix = true) {
+      const mutationModel = addPrefix ? `createOne${model}` : model
+      const mutationModelInput = addPrefix ? `CreateOne${model}` : model
+
       return await this.$apollo
         .mutate({
           mutation: gql`
-            mutation createOne${model}($record: CreateOne${model}Input!) {
-              createOne${model}(
+            mutation ${mutationModel}($record: ${mutationModelInput}Input!) {
+              ${mutationModel}(
                 record: $record
               ){
                 record {
@@ -31,7 +34,7 @@ Vue.mixin({
           },
         })
         .then((response) => {
-          return response.data[`createOne${model}`].record
+          return response.data[mutationModel].record
         })
         .catch(() => {
           swal({

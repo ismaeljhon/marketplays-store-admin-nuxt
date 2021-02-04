@@ -178,15 +178,13 @@ export default {
         'fullName',
         'email',
         'password',
-        'teamLeadOf',
-        'projectManagerOf',
       ])
 
       let result = null
       if (this.user) {
         result = await this.updateMutation('User', allowedItems, this.user._id)
       } else {
-        result = await this.createMutation('signup', allowedItems, false)
+        result = await this.createMutation('SignupUser', allowedItems, false)
       }
 
       if (result) {
