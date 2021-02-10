@@ -44,6 +44,7 @@
                     v-model="form.code"
                     :error-messages="errors"
                     class="mb-3"
+                    :disabled="!form.department"
                   >
                     <template v-if="serviceCodePrefix" slot="prepend-inner">
                       <v-btn depressed class="mr-2">
@@ -51,7 +52,9 @@
                       </v-btn>
                     </template>
                     <template slot="label">
-                      Service code <span class="red--text">*</span>
+                      <span v-if="form.department"> Service code </span>
+                      <span v-else>Please select department first </span>
+                      <span class="red--text">*</span>
                     </template>
                   </v-text-field>
                 </ValidationProvider>
