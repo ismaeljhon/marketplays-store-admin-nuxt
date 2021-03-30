@@ -63,6 +63,13 @@
         :server-items-length="itemsCount"
         @input="afterSelectedEventsOnTableList"
       >
+        <template slot="item.name" slot-scope="row">
+          <name-format
+            :firstname="row.item.firstName"
+            :lastname="row.item.lastName"
+            :middlename="row.item.middleName"
+          />
+        </template>
         <template slot="item.action" slot-scope="row">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
@@ -104,7 +111,6 @@ export default {
     headers: [
       { text: 'Name', align: 'start', value: 'name' },
       { text: 'Email', align: 'start', value: 'email' },
-      { text: 'Address', align: 'start', value: 'address' },
       {
         text: '',
         align: 'start',
@@ -118,8 +124,9 @@ export default {
       query: gql`
         {
           _id
-          name
-          address
+          firstName
+          middleName
+          lastName
           email
         }
       `,

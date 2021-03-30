@@ -24,9 +24,12 @@ export default {
         query customer($id: MongoID!) {
           customer(_id: $id) {
             _id
-            name
+            firstName
+            middleName
+            lastName
             email
             address
+            interestedIn
           }
         }
       `,

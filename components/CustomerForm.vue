@@ -10,9 +10,31 @@
             name="Name"
             :rules="'required'"
           >
-            <v-text-field v-model="form.name" :error-messages="errors">
+            <v-text-field v-model="form.firstName" :error-messages="errors">
               <template slot="label">
-                Name <span class="red--text">*</span>
+                First name <span class="red--text">*</span>
+              </template>
+            </v-text-field>
+          </ValidationProvider>
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="First name"
+            :rules="'required'"
+          >
+            <v-text-field v-model="form.middleName" :error-messages="errors">
+              <template slot="label">
+                Middle name <span class="red--text">*</span>
+              </template>
+            </v-text-field>
+          </ValidationProvider>
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="Last name"
+            :rules="'required'"
+          >
+            <v-text-field v-model="form.lastName" :error-messages="errors">
+              <template slot="label">
+                Last Name <span class="red--text">*</span>
               </template>
             </v-text-field>
           </ValidationProvider>
@@ -94,7 +116,9 @@ export default {
     async submit() {
       this.form.pricing = parseFloat(this.form.pricing)
       const allowedItems = this.getAllowedItems(this.form, [
-        'name',
+        'firstName',
+        'lastName',
+        'middleName',
         'email',
         'address',
       ])
