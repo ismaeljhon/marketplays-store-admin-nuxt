@@ -83,6 +83,12 @@ export default {
         link: '/customers',
       },
       {
+        key: 'vendors',
+        label: 'Vendors',
+        icon: 'account-tie',
+        link: '/vendors',
+      },
+      {
         key: 'departments',
         label: 'Departments',
         icon: 'domain',
