@@ -13,7 +13,7 @@
           >
             <v-icon left>mdi-download</v-icon>Export Vendors
           </download-csv>
-          <NuxtLink to="/vendors/add" v-show="false">
+          <NuxtLink to="/vendors/add">
             <v-btn small color="primary">
               <v-icon left>mdi-plus</v-icon>Add Vendor
             </v-btn>
@@ -127,9 +127,12 @@ export default {
           firstName
           middleName
           lastName
-          businessName
-          phoneNumber
           email
+          contactNumber
+          businessName
+          businessAddress
+          phoneNumber
+          dateTimeForVerification
         }
       `,
     },

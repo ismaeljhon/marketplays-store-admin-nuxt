@@ -51,15 +51,34 @@
           </ValidationProvider>
           <ValidationProvider
             v-slot="{ errors }"
-            name="Address"
+            name="Contact Number"
             :rules="'required'"
           >
-            <v-text-field v-model="form.address" :error-messages="errors">
+            <v-text-field v-model="form.contactNumber" :error-messages="errors">
               <template slot="label">
-                Address <span class="red--text">*</span>
+                Contact Number <span class="red--text">*</span>
               </template>
             </v-text-field>
           </ValidationProvider>
+          
+          <v-text-field v-model="form.address" :error-messages="errors">
+            <template slot="label">
+              Address
+            </template>
+          </v-text-field>
+          
+          <v-select
+            v-model="form.interestedIn"
+            :items="accessItems"
+            attach
+            chips
+            label="Interested in:"
+            multiple
+            item-text="label"
+            item-value="value"
+          ></v-select>
+
+          
         </v-col>
       </v-row>
 
@@ -89,10 +108,25 @@ export default {
   },
   data: () => ({
     form: {
-      name: null,
+      firstName: null,
+      middleName: null,
+      lastName: null,
       email: null,
+      contactNumber: null,
       address: null,
+      interestedIn: null
     },
+    errors: null,
+    accessItems: [
+      {
+        label: 'Buying',
+        value: 'store',
+      },
+      {
+        label: 'Teaching or Working',
+        value: 'tfps',
+      },
+    ],
   }),
   watch: {
     customer(value) {
@@ -114,13 +148,15 @@ export default {
       })
     },
     async submit() {
-      this.form.pricing = parseFloat(this.form.pricing)
+      // this.form.pricing = parseFloat(this.form.pricing)
       const allowedItems = this.getAllowedItems(this.form, [
         'firstName',
         'lastName',
         'middleName',
         'email',
+        'contactNumber',
         'address',
+        'interestedIn'
       ])
 
       let result = null
