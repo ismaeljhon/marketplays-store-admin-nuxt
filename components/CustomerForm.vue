@@ -141,9 +141,13 @@ export default {
     resetForm() {
       _assign(this, {
         form: {
-          name: null,
+          firstName: null,
+          middleName: null,
+          lastName: null,
           email: null,
+          contactNumber: null,
           address: null,
+          interestedIn: null
         },
       })
     },

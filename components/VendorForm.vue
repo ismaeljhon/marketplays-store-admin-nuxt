@@ -87,6 +87,17 @@
           </ValidationProvider>
           <ValidationProvider
             v-slot="{ errors }"
+            name="Phone Number"
+            :rules="'required'"
+          >
+            <v-text-field v-model="form.phoneNumber" :error-messages="errors">
+              <template slot="label">
+                Phone Number <span class="red--text">*</span>
+              </template>
+            </v-text-field>
+          </ValidationProvider>
+          <ValidationProvider
+            v-slot="{ errors }"
             name="Time Availability"
             :rules="'required'"
           >
@@ -97,6 +108,7 @@
             <datepicker
               v-model="form.dateTimeForVerification"
               :errors="errors"
+              :defaultValue="form.dateTimeForVerification"
             />
           </ValidationProvider>
         </v-col>
@@ -108,8 +120,6 @@
       </div>
     </form>
   </ValidationObserver>
-
-  
 </template>
 <script>
 import gql from 'graphql-tag'
@@ -130,7 +140,17 @@ export default {
     },
   },
   data: () => ({
-    form: {},
+    form: {
+      firstName: null,
+      lastName: null,
+      middleName: null,
+      email: null,
+      businessName: null,
+      businessAddress: null,
+      phoneNumber: null,
+      contactNumber: null,
+      dateTimeForVerification: null,
+    },
   }),
   watch: {
     vendor(value) {
@@ -142,35 +162,25 @@ export default {
       this.$router.push(this.previousPage)
       this.resetForm()
     },
-    allowedItems(item, field) {
-      const updatedItem = {}
-      _forEach(Object.keys(item), (key) => {
-        if (field.includes(key)) {
-          updatedItem[key] = item[key]
-        }
-      })
-
-      return updatedItem
-    },
     resetForm() {
       _assign(this, {
         form: {
           // 'hasExistingMarketplaysPlatform',
-          firstName: '',
-          lastName: '',
-          middleName: '',
-          email: '',
-          businessName: '',
-          businessAddress: '',
-          phoneNumber: '',
-          contactNumber: '',
-          dateTimeForVerification: ''
+          firstName: null,
+          lastName: null,
+          middleName: null,
+          email: null,
+          businessName: null,
+          businessAddress: null,
+          phoneNumber: null,
+          contactNumber: null,
+          dateTimeForVerification: null,
         },
       })
     },
     async submit() {
       // this.form.pricing = parseFloat(this.form.pricing)
-      const allowedItems = this.allowedItems(this.form, [
+      const allowedItems = this.getAllowedItems(this.form, [
         'firstName',
         'middleName',
         'lastName',
@@ -179,7 +189,7 @@ export default {
         'phoneNumber',
         'businessName',
         'businessAddress',
-        'dateTimeForVerification'
+        'dateTimeForVerification',
       ])
 
       let result = null
@@ -193,10 +203,8 @@ export default {
         result = await this.createMutation('Vendor', allowedItems)
       }
 
-      
-
       if (result) {
-        this.form = {}
+        // this.form = {}
         this.back()
         // eslint-disable-next-line no-undef
         swal({

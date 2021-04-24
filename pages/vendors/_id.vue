@@ -18,6 +18,11 @@ export default {
   data: () => ({
     vendor: {},
   }),
+  props: {
+    dateTimeForVerification: {
+      type: Date,
+    },
+  },
   apollo: {
     vendor: {
       query: gql`
