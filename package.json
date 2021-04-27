@@ -19,6 +19,7 @@
     "core-js": "^3.6.5",
     "graphql-tag": "^2.11.0",
     "lodash": "^4.17.20",
+    "moment-timezone": "^0.5.33",
     "nuxt": "^2.14.6",
     "short-uuid": "^4.1.0",
     "sweetalert": "^2.1.2",

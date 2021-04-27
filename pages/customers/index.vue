@@ -123,12 +123,16 @@ export default {
       model: 'customers',
       query: gql`
         {
-          _id
-          firstName
-          middleName
-          lastName
-          email
+            _id
+            firstName
+            middleName
+            lastName
+            email
+            address
+            contactNumber
+            interestedIn
         }
+        
       `,
     },
     customers: [],

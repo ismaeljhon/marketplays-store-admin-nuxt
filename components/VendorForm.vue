@@ -67,7 +67,7 @@
           >
             <v-text-field v-model="form.businessName" :error-messages="errors">
               <template slot="label">
-                Business Address <span class="red--text">*</span>
+                Business Name <span class="red--text">*</span>
               </template>
             </v-text-field>
           </ValidationProvider>
@@ -85,6 +85,32 @@
               </template>
             </v-text-field>
           </ValidationProvider>
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="Phone Number"
+            :rules="'required'"
+          >
+            <v-text-field v-model="form.phoneNumber" :error-messages="errors">
+              <template slot="label">
+                Phone Number <span class="red--text">*</span>
+              </template>
+            </v-text-field>
+          </ValidationProvider>
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="Time Availability"
+            :rules="'required'"
+          >
+            <p class="mt-10 mb-0">
+              Please specify a suitable time for a call back
+              <span class="red--text">*</span>
+            </p>
+            <datepicker
+              v-model="form.dateTimeForVerification"
+              :errors="errors"
+              :defaultValue="form.dateTimeForVerification"
+            />
+          </ValidationProvider>
         </v-col>
       </v-row>
 
@@ -98,6 +124,7 @@
 <script>
 import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
+import { forEach as _forEach } from 'lodash'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -114,14 +141,15 @@ export default {
   },
   data: () => ({
     form: {
-      firstName: '',
-      lastName: '',
-      middleName: '',
-      email: '',
-      businessName: '',
-      businessAddress: '',
-      phoneNumber: '',
-      contactNumber: '',
+      firstName: null,
+      lastName: null,
+      middleName: null,
+      email: null,
+      businessName: null,
+      businessAddress: null,
+      phoneNumber: null,
+      contactNumber: null,
+      dateTimeForVerification: null,
     },
   }),
   watch: {
@@ -137,45 +165,52 @@ export default {
     resetForm() {
       _assign(this, {
         form: {
-          firstName: '',
-          lastName: '',
-          middleName: '',
-          email: '',
-          businessName: '',
-          businessAddress: '',
-          phoneNumber: '',
-          contactNumber: '',
+          // 'hasExistingMarketplaysPlatform',
+          firstName: null,
+          lastName: null,
+          middleName: null,
+          email: null,
+          businessName: null,
+          businessAddress: null,
+          phoneNumber: null,
+          contactNumber: null,
+          dateTimeForVerification: null,
         },
       })
     },
     async submit() {
-      this.form.pricing = parseFloat(this.form.pricing)
+      // this.form.pricing = parseFloat(this.form.pricing)
       const allowedItems = this.getAllowedItems(this.form, [
         'firstName',
-        'lastName',
         'middleName',
+        'lastName',
         'email',
-        'address',
+        'contactNumber',
+        'phoneNumber',
+        'businessName',
+        'businessAddress',
+        'dateTimeForVerification',
       ])
 
       let result = null
-      if (this.customer) {
+      if (this.vendor) {
         result = await this.updateMutation(
-          'Customer',
+          'Vendor',
           allowedItems,
-          this.customer._id
+          this.vendor._id
         )
       } else {
-        result = await this.createMutation('Customer', allowedItems)
+        result = await this.createMutation('Vendor', allowedItems)
       }
 
       if (result) {
+        // this.form = {}
         this.back()
         // eslint-disable-next-line no-undef
         swal({
           title: 'Success',
           icon: 'success',
-          text: 'Customer has been successfully saved',
+          text: 'Vendor has been successfully saved',
         })
       }
     },

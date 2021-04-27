@@ -7,7 +7,7 @@
 </template>
 <script>
 export default {
-  name: 'AddDepartment',
+  name: 'AddCustomer',
   layout: 'single-page',
   mounted() {
     this.$store.commit('setPageTitle', 'New Customer')

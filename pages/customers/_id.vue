@@ -29,6 +29,7 @@ export default {
             lastName
             email
             address
+            contactNumber
             interestedIn
           }
         }
@@ -44,7 +45,7 @@ export default {
       result(response) {
         this.$store.commit(
           'setPageTitle',
-          `Edit Customer - ${response.data.customer.name}`
+          `Edit Customer - ${response.data.customer.firstName} ${response.data.customer.lastName}`
         )
       },
     },

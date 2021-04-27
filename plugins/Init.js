@@ -83,3 +83,24 @@ Vue.filter('concat_names', (value, key = 'name', delimiter = ', ') => {
   const names = _map(value, (o) => o.name)
   return names.join(delimiter)
 })
+
+Vue.use(VueCurrencyFilter, {
+  symbol: '$',
+  thousandsSeparator: ',',
+  fractionCount: 2,
+  fractionSeparator: '.',
+  symbolPosition: 'front',
+  symbolSpacing: false,
+  avoidEmptyDecimals: undefined,
+})
+
+if (!Vue.moment) {
+  Vue.use(require('vue-moment'))
+}
+
+Vue.filter('truncate', function (value, maxLength) {
+  if (!value || value.length <= maxLength) {
+    return value
+  }
+  return value.slice(0, maxLength) + '...'
+})

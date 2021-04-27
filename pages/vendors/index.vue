@@ -13,7 +13,7 @@
           >
             <v-icon left>mdi-download</v-icon>Export Vendors
           </download-csv>
-          <NuxtLink to="/vendors/add" v-show="false">
+          <NuxtLink to="/vendors/add">
             <v-btn small color="primary">
               <v-icon left>mdi-plus</v-icon>Add Vendor
             </v-btn>
@@ -68,6 +68,16 @@
             :middlename="row.item.middleName"
           />
         </template>
+
+        <template slot="item.emailVerified" slot-scope="row">
+          <v-checkbox
+            :disabled="row.item.emailVerified"
+            :value="row.item.emailVerified"
+            v-model="row.item.emailVerified"
+            @click.prevent="approveVendor(row.item)"
+          ></v-checkbox>
+        </template>
+
         <template slot="item.action" slot-scope="row">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
@@ -111,8 +121,20 @@ export default {
       { text: 'Business Name', align: 'start', value: 'businessName' },
       { text: 'Phone Number', align: 'start', value: 'phoneNumber' },
       { text: 'Email', align: 'start', value: 'email' },
+      // {
+      //   text: 'Verification Code',
+      //   align: 'start',
+      //   sortable: false,
+      //   value: 'verificationCode',
+      // },
       {
-        text: '',
+        text: 'Is Verified?',
+        align: 'end',
+        sortable: false,
+        value: 'emailVerified',
+      },
+      {
+        text: 'Actions',
         align: 'start',
         sortable: false,
         value: 'action',
@@ -127,9 +149,14 @@ export default {
           firstName
           middleName
           lastName
-          businessName
-          phoneNumber
           email
+          contactNumber
+          businessName
+          businessAddress
+          phoneNumber
+          dateTimeForVerification
+          verificationCode
+          emailVerified
         }
       `,
     },
@@ -142,6 +169,51 @@ export default {
     this.getItems()
   },
   methods: {
+    async approveVendor(item) {
+      const record = {
+        code: item.verificationCode,
+      }
+
+      const result = await this.$apollo
+        .mutate({
+          mutation: gql`
+            mutation verifyUser($record: UserVerifyEmailInput!) {
+              verifyUser(record: $record) {
+                record {
+                  email
+                  emailVerified
+                }
+              }
+            }
+          `,
+          variables: {
+            record,
+          },
+        })
+        .then((response) => {
+          console.log(response)
+          // return response.data['update' + model + 'ById'].record
+        })
+        .catch(() => {
+          swal({
+            title: 'Error',
+            icon: 'error',
+            text: `Something went wrong while updating ${model.toLowerCase()}`,
+          })
+          return false
+        })
+
+      if (result) {
+        // this.form = {}
+        this.back()
+        // eslint-disable-next-line no-undef
+        swal({
+          title: 'Success',
+          icon: 'success',
+          text: 'Vendor has been successfully approved',
+        })
+      }
+    },
     deleteItems(items) {
       // eslint-disable-next-line no-undef
       swal({
