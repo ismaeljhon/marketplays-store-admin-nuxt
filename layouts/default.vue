@@ -92,7 +92,7 @@ export default {
         key: 'categories',
         label: 'Categories',
         icon: 'domain',
-        link: '/Categories',
+        link: '/categories',
       },
       {
         key: 'services',

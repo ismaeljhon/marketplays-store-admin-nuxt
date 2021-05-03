@@ -182,7 +182,7 @@ export default {
         swal({
           title: 'Success',
           icon: 'success',
-          text: 'Department has been successfully saved',
+          text: 'Category has been successfully saved',
         })
       }
     },
