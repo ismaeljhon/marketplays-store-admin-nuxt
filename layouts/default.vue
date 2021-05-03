@@ -89,10 +89,10 @@ export default {
         link: '/vendors',
       },
       {
-        key: 'departments',
-        label: 'Departments',
+        key: 'categories',
+        label: 'Categories',
         icon: 'domain',
-        link: '/departments',
+        link: '/categories',
       },
       {
         key: 'services',
