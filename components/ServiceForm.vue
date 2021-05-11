@@ -98,7 +98,10 @@
                   v-model="form.projectManager"
                   :items="users"
                   hide-no-data
-                  item-text="fullName"
+                  :item-text="
+                    (item) =>
+                      `${item.firstName} ${item.middleName} ${item.lastName}`
+                  "
                   item-value="_id"
                   label="Product Manager"
                   placeholder="Select Product Manager"
@@ -147,7 +150,6 @@
             </v-row>
           </v-card-text>
         </v-card>
-
         <v-card class="mt-5">
           <v-card-title>Images</v-card-title>
           <v-divider></v-divider>
@@ -159,7 +161,7 @@
                 </v-alert>
                 <VueFileAgent
                   ref="vueFileAgent"
-                  v-model="fileRecords"
+                  v-model="form.images"
                   :theme="'grid'"
                   multiple
                   deletable
@@ -176,7 +178,22 @@
                   @select="filesSelected($event)"
                   @beforedelete="onBeforeDelete($event)"
                   @delete="fileDeleted($event)"
+                  name="files"
                 ></VueFileAgent>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="mt-5">
+                <v-btn
+                  color="primary"
+                  class="float-right"
+                  :disabled="!fileRecordsForUpload.length"
+                  @click="uploadFiles()"
+                  >Upload {{ fileRecordsForUpload.length }}
+                  {{
+                    fileRecordsForUpload.length > 1 ? 'files' : 'file'
+                  }}</v-btn
+                >
               </v-col>
             </v-row>
           </v-card-text>
@@ -366,6 +383,7 @@ import _filter from 'lodash/filter'
 import _forEach from 'lodash/forEach'
 import _find from 'lodash/find'
 import { VueEditor } from 'vue2-editor'
+import Config from '~/config'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -379,7 +397,9 @@ export default {
         query {
           users {
             _id
-            fullName
+            firstName
+            middleName
+            lastName
           }
         }
       `,
@@ -422,6 +442,7 @@ export default {
       enquireOnly: false,
       showInStore: true,
       tags: [],
+      images: [],
       slug: null,
       workforceThreshold: 100,
       seoTitle: null,
@@ -435,8 +456,10 @@ export default {
     tags: ['seo', 'web', 'web development', 'web design', 'graphics'],
     productImageAttachments: [],
     fileRecords: [],
-    uploadUrl: 'https://www.mocky.io/v2/5d4fb20b3000005c111099e3',
-    uploadHeaders: { 'X-Test-Header': 'vue-file-agent' },
+    uploadUrl: Config[process.env.NODE_ENV]
+      ? Config[process.env.NODE_ENV].API_BASE_URL + 'uploadFiles'
+      : Config.dev.API_BASE_URL + 'uploadFiles',
+    uploadHeaders: {},
     fileRecordsForUpload: [], // maintain an upload queue
     productAttributeTableHeader: [
       { text: 'Name', align: 'start', value: 'name', width: '300px' },
@@ -512,6 +535,7 @@ export default {
           enquireOnly: false,
           showInStore: true,
           tags: [],
+          images: [],
           slug: null,
           workforceThreshold: 100,
           seoTitle: null,
@@ -526,6 +550,8 @@ export default {
       })
     },
     async submit() {
+      console.log(this.form.images)
+
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
       this.form.code = this.serviceCodePrefix + this.form.code
@@ -537,6 +563,7 @@ export default {
         'pricing',
         // 'enquireOnly',
         // 'showInStore',
+        'images',
         'tags',
         'slug',
         'workforceThreshold',
@@ -578,12 +605,20 @@ export default {
       if (!this.tags.includes(newTag)) this.tags.push(newTag)
     },
     uploadFiles() {
-      // Using the default uploader. You may use another uploader instead.
-      this.$refs.vueFileAgent.upload(
+      var formData = new FormData()
+
+      var result = this.$refs.vueFileAgent.upload(
         this.uploadUrl,
         this.uploadHeaders,
-        this.fileRecordsForUpload
+        this.fileRecordsForUpload,
+        function createFormData(fileData) {
+          formData.append('files', fileData.file)
+          return formData
+        }
       )
+
+      console.log(result)
+
       this.fileRecordsForUpload = []
     },
     deleteUploadedFile(fileRecord) {
@@ -607,8 +642,8 @@ export default {
       if (i !== -1) {
         // queued file, not yet uploaded. Just remove from the arrays
         this.fileRecordsForUpload.splice(i, 1)
-        const k = this.fileRecords.indexOf(fileRecord)
-        if (k !== -1) this.fileRecords.splice(k, 1)
+        const k = this.form.images.indexOf(fileRecord)
+        if (k !== -1) this.form.images.splice(k, 1)
       } else if (confirm('Are you sure you want to delete?')) {
         this.$refs.vueFileAgent.deleteFileRecord(fileRecord) // will trigger 'delete' event
       }
