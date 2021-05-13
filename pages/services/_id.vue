@@ -5,7 +5,11 @@
         v-if="$apollo.queries.service.loading"
         loading-text="Loading Service..."
       />
-      <service-form v-else :service="service"></service-form>
+      <service-form
+        v-else
+        :service="service"
+        :files="service.files"
+      ></service-form>
     </v-col>
   </v-row>
 </template>
@@ -30,6 +34,7 @@ export default {
             shortDescription
             pricing
             tags
+            files
             slug
             workforceThreshold
             seoTitle
@@ -38,7 +43,7 @@ export default {
             projectManager {
               _id
             }
-            department {
+            category {
               _id
             }
           }
@@ -54,8 +59,8 @@ export default {
           data.service.projectManager = data.service.projectManager._id
         }
 
-        if (data.service.department) {
-          data.service.department = data.service.department._id
+        if (data.service.category) {
+          data.service.category = data.service.category._id
         }
 
         return data.service

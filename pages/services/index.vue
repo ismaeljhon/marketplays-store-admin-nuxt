@@ -77,7 +77,7 @@
     <v-card-text>
       <loading
         v-if="$apollo.loading"
-        loading-text="Loading Department..."
+        loading-text="Loading Service..."
         class="text-center mt-5"
       />
       <div v-else>
@@ -115,6 +115,7 @@ export default {
         {
           _id
           name
+          files
           pricing
         }
       `,

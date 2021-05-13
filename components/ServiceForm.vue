@@ -27,13 +27,13 @@
                   class="mb-4"
                 ></v-text-field>
                 <v-autocomplete
-                  v-model="form.department"
-                  :items="departments"
+                  v-model="form.category"
+                  :items="categories"
                   hide-no-data
                   item-text="name"
                   item-value="_id"
-                  label="Department"
-                  placeholder="Select Department"
+                  label="Category"
+                  placeholder="Select Category"
                 ></v-autocomplete>
                 <ValidationProvider
                   v-slot="{ errors }"
@@ -44,7 +44,7 @@
                     v-model="form.code"
                     :error-messages="errors"
                     class="mb-3"
-                    :disabled="!form.department"
+                    :disabled="!form.category"
                   >
                     <template v-if="serviceCodePrefix" slot="prepend-inner">
                       <v-btn depressed class="mr-2">
@@ -52,8 +52,8 @@
                       </v-btn>
                     </template>
                     <template slot="label">
-                      <span v-if="form.department"> Service code </span>
-                      <span v-else>Please select department first </span>
+                      <span v-if="form.category"> Service code </span>
+                      <span v-else>Please select category first </span>
                       <span class="red--text">*</span>
                     </template>
                   </v-text-field>
@@ -161,13 +161,13 @@
                 </v-alert>
                 <VueFileAgent
                   ref="vueFileAgent"
-                  v-model="form.images"
+                  v-model="form.files"
                   :theme="'grid'"
                   multiple
                   deletable
                   sortable="handle"
                   meta
-                  :accept="'image/*'"
+                  :accept="'image/jpeg'"
                   :max-size="'10MB'"
                   :max-files="14"
                   :help-text="'Choose images'"
@@ -384,6 +384,7 @@ import _forEach from 'lodash/forEach'
 import _find from 'lodash/find'
 import { VueEditor } from 'vue2-editor'
 import Config from '~/config'
+// import $axios from '@nuxtjs/axios'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -407,10 +408,10 @@ export default {
         return data.users
       },
     },
-    departments: {
+    categories: {
       query: gql`
         query {
-          departments {
+          categories {
             _id
             name
             code
@@ -418,13 +419,28 @@ export default {
         }
       `,
       update(data) {
-        return data.departments
+        return data.categories
       },
+    },
+    files: {
+      query: gql`
+        query {
+          files {
+            _id
+            path
+            file
+          }
+        }
+      `,
     },
   },
   props: {
     service: {
       type: Object,
+      default: null,
+    },
+    files: {
+      type: Array,
       default: null,
     },
     previousPage: {
@@ -442,20 +458,20 @@ export default {
       enquireOnly: false,
       showInStore: true,
       tags: [],
-      images: [],
+      files: [],
       slug: null,
       workforceThreshold: 100,
       seoTitle: null,
       seoKeywords: null,
       seoDescription: null,
       projectManager: null,
-      department: null,
+      category: null,
       attributes: [],
       variants: [],
     },
     tags: ['seo', 'web', 'web development', 'web design', 'graphics'],
     productImageAttachments: [],
-    fileRecords: [],
+    fileRecords: [], //used form.files instead for VueFileAgent v-model
     uploadUrl: Config[process.env.NODE_ENV]
       ? Config[process.env.NODE_ENV].API_BASE_URL + 'uploadFiles'
       : Config.dev.API_BASE_URL + 'uploadFiles',
@@ -499,11 +515,11 @@ export default {
   }),
   computed: {
     serviceCodePrefix() {
-      const departmentSelected = _find(
-        this.departments,
-        (o) => o._id === this.form.department
+      const categorySelected = _find(
+        this.categories,
+        (o) => o._id === this.form.category
       )
-      return departmentSelected ? `${departmentSelected.code}-` : null
+      return categorySelected ? `${categorySelected.code}-` : null
     },
   },
   watch: {
@@ -515,8 +531,51 @@ export default {
         _assign(this.form, value)
       }
     },
+    files(value) {
+      console.log(value)
+
+      var filesArr = []
+      var fileObj = {}
+
+      if (value) {
+        //fetch files from the server's '/uploads' directory
+        this.form.files.forEach((file, idx) => {
+          const ff = this.urltoFile(
+            'http://localhost:5001/files/' + file,
+            file,
+            'image/jpeg'
+          ).then((returnedFile) => {
+            //construct the file Object
+            fileObj = {
+              lastModified: returnedFile.lastModified,
+              lastModifiedDate: returnedFile.lastModifiedDate,
+              name: returnedFile.name,
+              size: returnedFile.size,
+              type: returnedFile.type,
+              ext: returnedFile.name.slice(returnedFile.name.length - 3),
+              file: 'http://localhost:5001/files/' + returnedFile.name,
+            }
+
+            // console.log(fileObj)
+
+            filesArr.push(fileObj)
+          })
+        })
+      }
+
+      this.form.files = filesArr
+    },
   },
   methods: {
+    urltoFile(url, filename, mimeType) {
+      return fetch(url)
+        .then(function (res) {
+          return res.arrayBuffer()
+        })
+        .then(function (buf) {
+          return new File([buf], filename, { type: mimeType })
+        })
+    },
     back() {
       this.$router.push(this.previousPage)
       this.resetForm()
@@ -535,14 +594,14 @@ export default {
           enquireOnly: false,
           showInStore: true,
           tags: [],
-          images: [],
+          files: [],
           slug: null,
           workforceThreshold: 100,
           seoTitle: null,
           seoKeywords: null,
           seoDescription: null,
           projectManager: null,
-          department: null,
+          category: null,
           attributes: [],
           variants: [],
         },
@@ -550,12 +609,10 @@ export default {
       })
     },
     async submit() {
-      console.log(this.form.images)
-
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
       this.form.code = this.serviceCodePrefix + this.form.code
-      const allowedItems = this.getAllowedItems(this.form, [
+      var allowedItems = this.getAllowedItems(this.form, [
         'name',
         'code',
         'description',
@@ -563,7 +620,7 @@ export default {
         'pricing',
         // 'enquireOnly',
         // 'showInStore',
-        'images',
+        'files',
         'tags',
         'slug',
         'workforceThreshold',
@@ -571,7 +628,7 @@ export default {
         'seoKeywords',
         'seoDescription',
         'projectManager',
-        'department',
+        'category',
         'attributes',
         'variants',
       ])
@@ -581,12 +638,31 @@ export default {
       // eslint-disable-next-line no-unreachable
       let result = null
       if (this.service) {
+        console.log(allowedItems)
+        console.log(allowedItems.files)
+        // result = await this.updateMutation('File', allowedItems.files)
+
         result = await this.updateMutation(
           'Service',
           allowedItems,
           this.service._id
         )
       } else {
+        //construct uploaded images accordingly
+
+        console.log(allowedItems.files)
+
+        allowedItems.files.forEach((image, idx) => {
+          // allowedItems.files[idx] = this.constructFile(image)
+          allowedItems.files[idx] = image.upload.data.files[0].filename
+        })
+
+        // console.log(allowedItems.files)
+
+        console.log(allowedItems)
+
+        result = await this.createMutation('File', allowedItems.files)
+
         result = await this.createMutation('Service', allowedItems)
       }
 
@@ -605,19 +681,23 @@ export default {
       if (!this.tags.includes(newTag)) this.tags.push(newTag)
     },
     uploadFiles() {
-      var formData = new FormData()
+      this.$refs.vueFileAgent
+        .upload(
+          this.uploadUrl,
+          this.uploadHeaders,
+          this.fileRecordsForUpload,
+          function createFormData(fileData) {
+            var formData = new FormData()
+            formData.append('files', fileData.file)
+            return formData
+          }
+        )
+        .then((res) => {
+          this.fileRecords = res
+          console.log(this.fileRecords)
+        })
 
-      var result = this.$refs.vueFileAgent.upload(
-        this.uploadUrl,
-        this.uploadHeaders,
-        this.fileRecordsForUpload,
-        function createFormData(fileData) {
-          formData.append('files', fileData.file)
-          return formData
-        }
-      )
-
-      console.log(result)
+      // console.log(result)
 
       this.fileRecordsForUpload = []
     },
@@ -642,8 +722,8 @@ export default {
       if (i !== -1) {
         // queued file, not yet uploaded. Just remove from the arrays
         this.fileRecordsForUpload.splice(i, 1)
-        const k = this.form.images.indexOf(fileRecord)
-        if (k !== -1) this.form.images.splice(k, 1)
+        const k = this.form.files.indexOf(fileRecord)
+        if (k !== -1) this.form.files.splice(k, 1)
       } else if (confirm('Are you sure you want to delete?')) {
         this.$refs.vueFileAgent.deleteFileRecord(fileRecord) // will trigger 'delete' event
       }

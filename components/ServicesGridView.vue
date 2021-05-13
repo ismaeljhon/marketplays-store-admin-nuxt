@@ -8,7 +8,7 @@
     <v-col v-for="item in items" :key="item.id" cols="3">
       <v-card outlined :raised="item.is_selected">
         <v-img
-          :src="item.img ? item.img : require('~/assets/image-placeholder.jpg')"
+          :src="'http://localhost:5001/files/' + item.files[0]"
           class="white--text align-end"
           gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
           height="200px"

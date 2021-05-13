@@ -6,9 +6,7 @@
   </v-row>
 </template>
 <script>
-import UploadFile from '~/components/UploadFile.vue'
 export default {
-  components: { UploadFile },
   name: 'AddService',
   layout: 'single-page',
   mounted() {
