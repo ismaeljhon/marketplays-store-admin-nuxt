@@ -60,13 +60,17 @@
               </template>
             </v-text-field>
           </ValidationProvider>
-          
-          <v-text-field v-model="form.address" :error-messages="errors">
-            <template slot="label">
-              Address
-            </template>
-          </v-text-field>
-          
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="Address"
+            :rules="'required'"
+          >
+            <v-text-field v-model="form.address" :error-messages="errors">
+              <template slot="label">
+                Address <span class="red--text">*</span>
+              </template>
+            </v-text-field>
+          </ValidationProvider>
           <v-select
             v-model="form.interestedIn"
             :items="accessItems"
@@ -77,8 +81,6 @@
             item-text="label"
             item-value="value"
           ></v-select>
-
-          
         </v-col>
       </v-row>
 
@@ -114,7 +116,7 @@ export default {
       email: null,
       contactNumber: null,
       address: null,
-      interestedIn: null
+      interestedIn: null,
     },
     errors: null,
     accessItems: [
@@ -147,7 +149,7 @@ export default {
           email: null,
           contactNumber: null,
           address: null,
-          interestedIn: null
+          interestedIn: null,
         },
       })
     },
@@ -160,7 +162,7 @@ export default {
         'email',
         'contactNumber',
         'address',
-        'interestedIn'
+        'interestedIn',
       ])
 
       let result = null
