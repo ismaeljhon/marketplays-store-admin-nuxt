@@ -21,7 +21,7 @@ Vue.mixin({
       return updatedItem
     },
     async generateVariantsData(data) {
-      debugger;
+     
       const record = {
         attributeData: data.map((attribute) => {
           return {
