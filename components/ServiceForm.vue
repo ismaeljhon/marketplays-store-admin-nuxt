@@ -1,6 +1,6 @@
 <template>
-  <section class="service-form">
-    <ValidationObserver ref="observer" v-slot="{ handleSubmit }">
+  <section id="service-form" class="service-form">
+    <ValidationObserver ref="observer" v-slot="{ handleSubmit, invalid }">
       <form @submit.prevent="handleSubmit(submit)">
         <v-card>
           <v-card-title>General Information</v-card-title>
@@ -363,7 +363,13 @@
 
         <div class="mt-5">
           <v-btn @click.prevent="back">cancel</v-btn>
-          <v-btn color="primary" type="submit" class="float-right">save</v-btn>
+          <v-btn
+            color="primary"
+            type="submit"
+            class="float-right"
+            :disabled="invalid"
+            >save</v-btn
+          >
         </div>
       </form>
     </ValidationObserver>
@@ -609,6 +615,10 @@ export default {
       })
     },
     async submit() {
+      const isValid = await this.$refs.observer.validate()
+
+      console.log(isValid ? 'true' : 'false')
+
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
       this.form.code = this.serviceCodePrefix + this.form.code
@@ -802,6 +812,7 @@ export default {
     },
     deleteAttribute(item) {
       // eslint-disable-next-line no-undef
+      console.log(item)
       swal({
         title: 'Are you sure?',
         text: `This will affect the variant tables also, and your unsaved work will be lost.`,
@@ -811,7 +822,12 @@ export default {
       }).then((willDelete) => {
         if (willDelete) {
           this.form.attributes = _filter(this.form.attributes, (i) => {
-            return item.code !== i.code
+            return item.name !== i.name
+          })
+
+          this.form.variants = _filter(this.form.variants, (i) => {
+            console.log(i)
+            return item.name !== i.name
           })
         }
       })
