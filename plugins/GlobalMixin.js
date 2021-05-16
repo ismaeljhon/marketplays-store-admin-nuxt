@@ -24,9 +24,9 @@ Vue.mixin({
       const record = {
         attributeData: data.map((attribute) => {
           return {
-            attribute: attribute.name,
+            attribute: { name: attribute.name, code: attribute.name },
             options: attribute.options.map((option) => {
-              return option.name
+              return { name: option.name, code: option.name }
             }),
           }
         }),
@@ -40,12 +40,15 @@ Vue.mixin({
                 record {
                   variants {
                     name
+                    code
                     attributeData {
                       attribute {
                         name
+                        code
                       }
                       option {
                         name
+                        code
                       }
                     }
                   }
