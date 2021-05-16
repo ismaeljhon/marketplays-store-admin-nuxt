@@ -10,7 +10,7 @@
         <v-col cols="7" class="text-right">
           <download-csv
             class="mr-2 v-btn v-btn--depressed v-btn--flat v-btn--outlined v-btn--tile theme--light v-size--small"
-            :data="users"
+            :data="admins"
             style="cursor: pointer"
           >
             <v-icon left>mdi-download</v-icon>Export Admin Users
@@ -55,7 +55,7 @@
         v-model="tableItems.selected"
         :search="search"
         :headers="headers"
-        :items="users"
+        :items="admins"
         item-key="_id"
         loading-text="Loading please wait..."
         :loading="isLoading"
@@ -102,8 +102,11 @@ export default {
   data: () => ({
     search: null,
     headers: [
-      { text: 'Name', align: 'start', value: 'fullName' },
+      { text: 'First Name', align: 'start', value: 'firstName' },
+      { text: 'Middle Name', align: 'start', value: 'middleName' },
+      { text: 'Last Name', align: 'start', value: 'lastName' },
       { text: 'Email', align: 'start', value: 'email' },
+      { text: 'Contact No', align: 'start', value: 'contactNumber' },
       {
         text: '',
         align: 'start',
@@ -113,16 +116,19 @@ export default {
       },
     ],
     tableParams: {
-      model: 'users',
+      model: 'admins',
       query: gql`
         {
           _id
-          fullName
+          firstName
+          middleName
+          lastName
           email
+          contactNumber
         }
       `,
     },
-    users: [],
+    admins: [],
   }),
   beforeDestroy() {
     this.clearGetItems()
@@ -141,7 +147,7 @@ export default {
         dangerMode: true,
       }).then(async (willDelete) => {
         if (willDelete) {
-          const result = await this.deleteMutation('User', items._id)
+          const result = await this.deleteMutation('Admin', items._id)
 
           if (result) {
             // eslint-disable-next-line no-undef
