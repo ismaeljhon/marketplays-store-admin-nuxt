@@ -96,7 +96,7 @@
                 </ValidationProvider>
                 <v-autocomplete
                   v-model="form.projectManager"
-                  :items="users"
+                  :items="projectManagers"
                   hide-no-data
                   item-text="fullName"
                   item-value="_id"
@@ -366,6 +366,7 @@ import _filter from 'lodash/filter'
 import _forEach from 'lodash/forEach'
 import _find from 'lodash/find'
 import { VueEditor } from 'vue2-editor'
+import { merge as _merge } from 'lodash'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -374,19 +375,22 @@ export default {
     VueEditor,
   },
   apollo: {
-    users: {
+    admins: {
       query: gql`
         query {
-          users {
+          admins {
             _id
-            fullName
+            firstName
+            middleName
+            lastName
           }
         }
       `,
       update(data) {
-        return data.users
+        return data.admins
       },
     },
+    // todo change this to category!!!
     departments: {
       query: gql`
         query {
@@ -482,6 +486,18 @@ export default {
       )
       return departmentSelected ? `${departmentSelected.code}-` : null
     },
+
+    projectManagers(){
+      debugger
+      return this.admins && this.admins.map(x=>{
+
+        return _merge(x, {          
+          fullName: `${[x.firstName , x.middleName, x.lastName].join(' ')}`
+        })
+      })
+    }
+
+
   },
   watch: {
     service(value) {
