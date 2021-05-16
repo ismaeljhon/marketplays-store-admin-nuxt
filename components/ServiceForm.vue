@@ -544,8 +544,6 @@ export default {
       }
     },
     files(value) {
-      console.log(value)
-
       var filesArr = []
       var fileObj = {}
 
@@ -567,8 +565,6 @@ export default {
               ext: returnedFile.name.slice(returnedFile.name.length - 3),
               file: 'http://localhost:5001/files/' + returnedFile.name,
             }
-
-            // console.log(fileObj)
 
             filesArr.push(fileObj)
           })
@@ -621,10 +617,6 @@ export default {
       })
     },
     async submit() {
-      const isValid = await this.$refs.observer.validate()
-
-      console.log(isValid ? 'true' : 'false')
-
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
       this.form.code = this.serviceCodePrefix + this.form.code
@@ -649,13 +641,10 @@ export default {
         'variants',
       ])
       // eslint-disable-next-line no-console
-      // return console.log(allowedItems)
 
       // eslint-disable-next-line no-unreachable
       let result = null
       if (this.service) {
-        console.log(allowedItems)
-        console.log(allowedItems.files)
         // result = await this.updateMutation('File', allowedItems.files)
 
         result = await this.updateMutation(
@@ -664,54 +653,58 @@ export default {
           this.service._id
         )
       } else {
-        //construct uploaded images accordingly
-
-        console.log(allowedItems.files)
-
-        allowedItems.files.forEach((image, idx) => {
-          // allowedItems.files[idx] = this.constructFile(image)
-          allowedItems.files[idx] = image.upload.data.files[0].filename
-        })
-
-        // console.log(allowedItems.files)
-
-        console.log(allowedItems)
+        if (allowedItems.files) {
+          allowedItems.files.forEach((image, idx) => {
+            allowedItems.files[idx] = image.upload.data.files[0].filename
+          })
+        }
 
         //construct AttributeInput accordingly
-        allowedItems.attributes.forEach((attribute, idx) => {
-          const attrInput = {
-            attribute: {
-              name: attribute.name,
-              code: attribute.name,
-            },
-            options: attribute.options,
-          }
-          allowedItems.attributes[idx] = attrInput
-        })
+
+        if (allowedItems.attributes) {
+          allowedItems.attributes.forEach((attribute, idx) => {
+            attribute.options.forEach((opt, idx) => {
+              attribute.options[idx] = {
+                name: opt.name,
+                code: opt.name,
+              }
+            })
+
+            const attrInput = {
+              attribute: {
+                name: attribute.name,
+                code: attribute.name,
+              },
+              options: attribute.options,
+            }
+            allowedItems.attributes[idx] = attrInput
+          })
+        }
 
         //construct VariantInput accordingly
-        allowedItems.variants.forEach((variant, idx) => {
-          //construct proper VariantAttributeData
-          variant.attributeData.forEach((data, k) => {
-            // console.log(data)
-            const attrData = {
-              attribute: data.attribute.code,
-              option: data.option.code,
+        if (allowedItems.variants) {
+          allowedItems.variants.forEach((variant, idx) => {
+            //construct proper VariantAttributeData
+            variant.attributeData.forEach((data, k) => {
+              const attrData = {
+                attribute: data.attribute.code,
+                option: data.option.code,
+              }
+
+              variant.attributeData[k] = attrData
+            })
+
+            const variantInput = {
+              name: variant.name,
+              code: variant.code,
+              description: variant.description,
+              pricing: parseFloat(variant.pricing),
+              attributeData: variant.attributeData,
             }
 
-            variant.attributeData[k] = attrData
+            allowedItems.variants[idx] = variantInput
           })
-
-          const variantInput = {
-            name: variant.name,
-            code: variant.code,
-            description: variant.description,
-            pricing: parseFloat(variant.pricing),
-            attributeData: variant.attributeData,
-          }
-
-          allowedItems.variants[idx] = variantInput
-        })
+        }
 
         // result = await this.createMutation('File', allowedItems.files)
 
@@ -748,8 +741,6 @@ export default {
           this.fileRecords = res
           console.log(this.fileRecords)
         })
-
-      // console.log(result)
 
       this.fileRecordsForUpload = []
     },
@@ -789,7 +780,6 @@ export default {
       }
     },
     async updateProductAttribute(attribute) {
-      console.log(attribute)
       // eslint-disable-next-line no-console
       let itemFound = false
       _forEach(this.form.attributes, (item) => {
@@ -804,8 +794,6 @@ export default {
       const variantsData = await this.generateVariantsData(this.form.attributes)
 
       this.form.variants = variantsData.map((variant) => {
-        console.log(variant)
-        // debugger
         return {
           name: variant.name,
           code: variant.code,
@@ -839,7 +827,6 @@ export default {
           }
 
           this.form.variants = _filter(this.form.variants, (i) => {
-            console.log(i)
             return item.name !== i.name
           })
         }
