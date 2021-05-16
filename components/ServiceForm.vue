@@ -678,15 +678,9 @@ export default {
           //construct proper VariantAttributeData
           variant.attributeData.forEach((data, k) => {
             // console.log(data)
-            const attrData =  {
-              attribute: {
-                name: data.attribute.name,
-                code: data.attribute.code,
-              },
-              option: {
-                name: data.option.name,
-                code: data.option.code,
-              },
+            const attrData = {
+              attribute: data.attribute.code,
+              option: data.option.code,
             }
 
             variant.attributeData[k] = attrData
