@@ -387,6 +387,7 @@ import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
 import _filter from 'lodash/filter'
 import _forEach from 'lodash/forEach'
+import _has from 'lodash/has'
 import _find from 'lodash/find'
 import { VueEditor } from 'vue2-editor'
 import Config from '~/config'
@@ -812,10 +813,12 @@ export default {
     },
     deleteAttribute(item) {
       // eslint-disable-next-line no-undef
-      console.log(item)
+
       swal({
         title: 'Are you sure?',
-        text: `This will affect the variant tables also, and your unsaved work will be lost.`,
+        text: _has(item, 'attributeData')
+          ? `You are about to delete variant '${item.name}'`
+          : `You are about to delete attribute '${item.name}'. This will also remove all variants data below.`, //variant if item has attributeData, attribute otherwise
         icon: 'warning',
         buttons: true,
         dangerMode: true,
@@ -824,6 +827,11 @@ export default {
           this.form.attributes = _filter(this.form.attributes, (i) => {
             return item.name !== i.name
           })
+
+          //clear variants when deleting attribute
+          if (!_has(item, 'attributeData')) {
+            this.form.variants = []
+          }
 
           this.form.variants = _filter(this.form.variants, (i) => {
             console.log(i)
