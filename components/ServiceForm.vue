@@ -487,8 +487,7 @@ export default {
       return departmentSelected ? `${departmentSelected.code}-` : null
     },
 
-    projectManagers(){
-      debugger
+    projectManagers(){      
       return this.admins && this.admins.map(x=>{
 
         return _merge(x, {          

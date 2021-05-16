@@ -172,7 +172,6 @@ export default {
   }),
   computed: {
     isEdit() {
-      debugger
       return Boolean(this.admin && this.admin._id)
     },   
   },
@@ -206,7 +205,7 @@ export default {
       })
     },
     async submit() {
-      debugger;
+      
       const allowedItems = this.getAllowedItems(this.form, [
         'firstName',
         'middleName',
