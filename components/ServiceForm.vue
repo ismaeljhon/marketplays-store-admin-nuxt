@@ -382,6 +382,11 @@
     />
   </section>
 </template>
+<style>
+.swal-text {
+  text-align: center;
+}
+</style>
 <script>
 import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
