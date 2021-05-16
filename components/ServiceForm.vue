@@ -661,7 +661,49 @@ export default {
 
         console.log(allowedItems)
 
-        result = await this.createMutation('File', allowedItems.files)
+        //construct AttributeInput accordingly
+        allowedItems.attributes.forEach((attribute, idx) => {
+          const attrInput = {
+            attribute: {
+              name: attribute.name,
+              code: attribute.name,
+            },
+            options: attribute.options,
+          }
+          allowedItems.attributes[idx] = attrInput
+        })
+
+        //construct VariantInput accordingly
+        allowedItems.variants.forEach((variant, idx) => {
+          //construct proper VariantAttributeData
+          variant.attributeData.forEach((data, k) => {
+            // console.log(data)
+            const attrData =  {
+              attribute: {
+                name: data.attribute.name,
+                code: data.attribute.code,
+              },
+              option: {
+                name: data.option.name,
+                code: data.option.code,
+              },
+            }
+
+            variant.attributeData[k] = attrData
+          })
+
+          const variantInput = {
+            name: variant.name,
+            code: variant.code,
+            description: variant.description,
+            pricing: parseFloat(variant.pricing),
+            attributeData: variant.attributeData,
+          }
+
+          allowedItems.variants[idx] = variantInput
+        })
+
+        // result = await this.createMutation('File', allowedItems.files)
 
         result = await this.createMutation('Service', allowedItems)
       }
@@ -737,6 +779,7 @@ export default {
       }
     },
     async updateProductAttribute(attribute) {
+      console.log(attribute)
       // eslint-disable-next-line no-console
       let itemFound = false
       _forEach(this.form.attributes, (item) => {
@@ -745,13 +788,17 @@ export default {
           itemFound = true
         }
       })
+
       if (!itemFound) this.form.attributes.push(attribute)
 
       const variantsData = await this.generateVariantsData(this.form.attributes)
 
       this.form.variants = variantsData.map((variant) => {
+        console.log(variant)
+        // debugger
         return {
           name: variant.name,
+          code: variant.code,
           description: null,
           pricing: 0.0,
           // isEnquiry: false,
