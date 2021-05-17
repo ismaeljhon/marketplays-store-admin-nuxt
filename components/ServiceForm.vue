@@ -230,6 +230,12 @@
                   :headers="productAttributeTableHeader"
                   :items="form.attributes"
                 >
+                  <template slot="item.attribute.name" slot-scope="row">
+                    {{ row.item.attribute.name }}
+                  </template>
+                  <template slot="item.attribute.description" slot-scope="row">
+                    {{ row.item.attribute.name }}
+                  </template>
                   <template slot="item.options" slot-scope="row">
                     {{ row.item.options | concat_names }}
                   </template>
@@ -550,7 +556,7 @@ export default {
       if (value) {
         //fetch files from the server's '/uploads' directory
         this.form.files.forEach((file, idx) => {
-          const ff = this.urltoFile(
+          this.urltoFile(
             'http://localhost:5001/files/' + file,
             file,
             'image/jpeg'
@@ -572,6 +578,7 @@ export default {
       }
 
       this.form.files = filesArr
+      this.fileRecords = filesArr
     },
   },
   methods: {
@@ -620,6 +627,7 @@ export default {
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
       this.form.code = this.serviceCodePrefix + this.form.code
+
       var allowedItems = this.getAllowedItems(this.form, [
         'name',
         'code',
@@ -640,10 +648,64 @@ export default {
         'attributes',
         'variants',
       ])
+
+      if (allowedItems.files) {
+        allowedItems.files.forEach((image, idx) => {
+          allowedItems.files[idx] = image.upload.data.files[0].filename
+        })
+      }
+
+      //construct AttributeInput accordingly
+
+      if (allowedItems.attributes) {
+        allowedItems.attributes.forEach((attribute, idx) => {
+          attribute.options.forEach((opt, idx) => {
+            attribute.options[idx] = {
+              name: opt.name,
+              code: opt.name,
+            }
+          })
+
+          const attrInput = {
+            attribute: {
+              name: attribute.name,
+              code: attribute.name,
+            },
+            options: attribute.options,
+          }
+          allowedItems.attributes[idx] = attrInput
+        })
+      }
+
+      //construct VariantInput accordingly
+      if (allowedItems.variants) {
+        allowedItems.variants.forEach((variant, idx) => {
+          //construct proper VariantAttributeData
+          variant.attributeData.forEach((data, k) => {
+            const attrData = {
+              attribute: data.attribute.code,
+              option: data.option.code,
+            }
+
+            variant.attributeData[k] = attrData
+          })
+
+          const variantInput = {
+            name: variant.name,
+            code: variant.code,
+            description: variant.description,
+            pricing: parseFloat(variant.pricing),
+            attributeData: variant.attributeData,
+          }
+
+          allowedItems.variants[idx] = variantInput
+        })
+      }
       // eslint-disable-next-line no-console
 
       // eslint-disable-next-line no-unreachable
       let result = null
+
       if (this.service) {
         // result = await this.updateMutation('File', allowedItems.files)
 
@@ -653,59 +715,6 @@ export default {
           this.service._id
         )
       } else {
-        if (allowedItems.files) {
-          allowedItems.files.forEach((image, idx) => {
-            allowedItems.files[idx] = image.upload.data.files[0].filename
-          })
-        }
-
-        //construct AttributeInput accordingly
-
-        if (allowedItems.attributes) {
-          allowedItems.attributes.forEach((attribute, idx) => {
-            attribute.options.forEach((opt, idx) => {
-              attribute.options[idx] = {
-                name: opt.name,
-                code: opt.name,
-              }
-            })
-
-            const attrInput = {
-              attribute: {
-                name: attribute.name,
-                code: attribute.name,
-              },
-              options: attribute.options,
-            }
-            allowedItems.attributes[idx] = attrInput
-          })
-        }
-
-        //construct VariantInput accordingly
-        if (allowedItems.variants) {
-          allowedItems.variants.forEach((variant, idx) => {
-            //construct proper VariantAttributeData
-            variant.attributeData.forEach((data, k) => {
-              const attrData = {
-                attribute: data.attribute.code,
-                option: data.option.code,
-              }
-
-              variant.attributeData[k] = attrData
-            })
-
-            const variantInput = {
-              name: variant.name,
-              code: variant.code,
-              description: variant.description,
-              pricing: parseFloat(variant.pricing),
-              attributeData: variant.attributeData,
-            }
-
-            allowedItems.variants[idx] = variantInput
-          })
-        }
-
         // result = await this.createMutation('File', allowedItems.files)
 
         result = await this.createMutation('Service', allowedItems)
