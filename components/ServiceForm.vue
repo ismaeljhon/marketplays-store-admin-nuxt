@@ -96,7 +96,7 @@
                 </ValidationProvider>
                 <v-autocomplete
                   v-model="form.projectManager"
-                  :items="users"
+                  :items="projectManagers"
                   hide-no-data
                   :item-text="
                     (item) =>
@@ -402,7 +402,7 @@ import _has from 'lodash/has'
 import _find from 'lodash/find'
 import { VueEditor } from 'vue2-editor'
 import Config from '~/config'
-// import $axios from '@nuxtjs/axios'
+import { merge as _merge } from 'lodash'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -411,10 +411,10 @@ export default {
     VueEditor,
   },
   apollo: {
-    users: {
+    admins: {
       query: gql`
         query {
-          users {
+          admins {
             _id
             firstName
             middleName
@@ -423,7 +423,7 @@ export default {
         }
       `,
       update(data) {
-        return data.users
+        return data.admins
       },
     },
     categories: {
@@ -538,6 +538,17 @@ export default {
         (o) => o._id === this.form.category
       )
       return categorySelected ? `${categorySelected.code}-` : null
+    },
+
+    projectManagers() {
+      return (
+        this.admins &&
+        this.admins.map((x) => {
+          return _merge(x, {
+            fullName: `${[x.firstName, x.middleName, x.lastName].join(' ')}`,
+          })
+        })
+      )
     },
   },
   watch: {

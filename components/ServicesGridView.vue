@@ -8,7 +8,7 @@
     <v-col v-for="item in items" :key="item.id" cols="3">
       <v-card outlined :raised="item.is_selected">
         <v-img
-          :src="'http://localhost:5001/files/' + item.files[0]"
+          :src="apiEndpooint + item.files[0]"
           class="white--text align-end"
           gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
           height="200px"
@@ -48,6 +48,8 @@
   </v-row>
 </template>
 <script>
+import Config from '~/config'
+
 export default {
   // eslint-disable-next-line vue/name-property-casing
   name: 'product-grid-view',
@@ -57,5 +59,10 @@ export default {
       default: null,
     },
   },
+  data: () => ({
+    apiEndpooint: Config[process.env.NODE_ENV]
+      ? Config[process.env.NODE_ENV].API_BASE_URL + 'files/'
+      : Config.dev.API_BASE_URL + 'files/',
+  }),
 }
 </script>

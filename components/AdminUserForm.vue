@@ -7,15 +7,52 @@
           <v-divider class="mb-5"></v-divider>
           <ValidationProvider
             v-slot="{ errors }"
-            name="Name"
+            name="First Name"
             :rules="'required'"
           >
-            <v-text-field v-model="form.fullName" :error-messages="errors">
+            <v-text-field v-model="form.firstName" :error-messages="errors">
               <template slot="label">
-                Name <span class="red--text">*</span>
+                First Name <span class="red--text">*</span>
               </template>
             </v-text-field>
           </ValidationProvider>
+
+    <ValidationProvider
+            v-slot="{ errors }"
+            name="Middle Name"
+            :rules="'required'"
+          >
+            <v-text-field v-model="form.middleName" :error-messages="errors">
+              <template slot="label">
+                Middle Name <span class="red--text">*</span>
+              </template>
+            </v-text-field>
+          </ValidationProvider>
+
+    <ValidationProvider
+            v-slot="{ errors }"
+            name="Last Name"
+            :rules="'required'"
+          >
+            <v-text-field v-model="form.lastName" :error-messages="errors">
+              <template slot="label">
+                Last Name <span class="red--text">*</span>
+              </template>
+            </v-text-field>
+          </ValidationProvider>
+
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="Contact Number"
+            :rules="'required'"
+          >
+            <v-text-field v-model="form.contactNumber" :error-messages="errors">
+              <template slot="label">
+                Contact Number<span class="red--text">*</span>
+              </template>
+            </v-text-field>
+          </ValidationProvider>
+
           <ValidationProvider
             v-slot="{ errors }"
             name="Email"
@@ -72,20 +109,20 @@
           </div>
           <v-autocomplete
             v-model="form.teamLeadOf"
-            :items="departments"
+            :items="categories"
             hide-no-data
             item-text="name"
             item-value="_id"
             multiple
             chips
             deletable-chips
-            label="Team Lead of department(s):"
+            label="Team Lead of category(s):"
           ></v-autocomplete>
           <v-autocomplete
             v-model="form.projectManagerOf"
-            :items="servicesWithLabel"
+            :items="services"
             hide-no-data
-            item-text="label"
+            item-text="name"
             item-value="_id"
             multiple
             chips
@@ -109,7 +146,7 @@ export default {
   // eslint-disable-next-line vue/name-property-casing
   name: 'admin-user-form',
   props: {
-    user: {
+    admin: {
       type: Object,
       default: null,
     },
@@ -120,42 +157,33 @@ export default {
   },
   data: () => ({
     form: {
-      fullName: null,
+      firstName : null,
+      middleName : null,
+      lastName : null,
       email: null,
+      contactNumber: null,
       password: null,
       password: null,
       teamLeadOf: [],
       projectManagerOf: [],
     },
-    departments: [],
+    categories: [],
     services: [],
   }),
   computed: {
     isEdit() {
-      return Boolean(this.user && this.user._id)
-    },
-    servicesWithLabel() {
-      return this.services.map((o) => {
-        return _merge(o, {
-          label: `${o.name} (${o.department ? o.department.name : ''})`,
-        })
-      })
-    },
+      return Boolean(this.admin && this.admin._id)
+    },   
   },
   watch: {
-    user(value) {
-      if (value) {
-        this.form = value
-        this.form.teamLeadOf = value.teamLeadOf.map((user) => user._id)
-        this.form.projectManagerOf = value.projectManagerOf.map(
-          (deparment) => deparment._id
-        )
-      }
+    admin(value) {      
+      console.log(value)
+      if (value) this.form = value        
     },
   },
   mounted() {
-    this.getList('departments', ['_id', 'name'])
-    this.getList('services', ['_id', 'name', 'department { name }'])
+    this.getList('categories', ['_id', 'name'])
+    this.getList('services', ['_id', 'name'])
   },
   methods: {
     back() {
@@ -165,8 +193,11 @@ export default {
     resetForm() {
       _assign(this, {
         form: {
-          fullName: null,
+          firstName : null,
+          middleName : null,
+          lastName : null,
           email: null,
+          contactNumber: null,
           password: null,
           teamLeadOf: [],
           projectManagerOf: [],
@@ -174,17 +205,34 @@ export default {
       })
     },
     async submit() {
+      
       const allowedItems = this.getAllowedItems(this.form, [
-        'fullName',
+        'firstName',
+        'middleName',
+        'lastName',
+        'contactNumber',
         'email',
         'password',
+        'teamLeadOf',
+        'projectManagerOf'
       ])
 
+      // check if teamLeadOf and projectManagerOf is array of id;
+      // update it if not
+      
+      allowedItems.projectManagerOf = allowedItems.projectManagerOf.map(x=>{
+        return typeof(x) === 'object'? x._id : x
+      })
+
+      allowedItems.teamLeadOf = allowedItems.teamLeadOf.map(x=>{
+        return typeof(x) === 'object'? x._id : x
+      })
+
       let result = null
-      if (this.user) {
-        result = await this.updateMutation('User', allowedItems, this.user._id)
+      if (this.admin) {
+        result = await this.updateMutation('Admin', allowedItems, this.admin._id)
       } else {
-        result = await this.createMutation('SignupUser', allowedItems, false)
+        result = await this.createMutation('SignupAdminUser', allowedItems, false)
       }
 
       if (result) {
