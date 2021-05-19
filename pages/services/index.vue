@@ -116,6 +116,7 @@ export default {
           _id
           name
           pricing
+          files
         }
       `,
     },

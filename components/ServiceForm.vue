@@ -1,6 +1,6 @@
 <template>
-  <section class="service-form">
-    <ValidationObserver ref="observer" v-slot="{ handleSubmit }">
+  <section id="service-form" class="service-form">
+    <ValidationObserver ref="observer" v-slot="{ handleSubmit, invalid }">
       <form @submit.prevent="handleSubmit(submit)">
         <v-card>
           <v-card-title>General Information</v-card-title>
@@ -27,13 +27,13 @@
                   class="mb-4"
                 ></v-text-field>
                 <v-autocomplete
-                  v-model="form.department"
-                  :items="departments"
+                  v-model="form.category"
+                  :items="categories"
                   hide-no-data
                   item-text="name"
                   item-value="_id"
-                  label="Department"
-                  placeholder="Select Department"
+                  label="Category"
+                  placeholder="Select Category"
                 ></v-autocomplete>
                 <ValidationProvider
                   v-slot="{ errors }"
@@ -44,7 +44,7 @@
                     v-model="form.code"
                     :error-messages="errors"
                     class="mb-3"
-                    :disabled="!form.department"
+                    :disabled="!form.category"
                   >
                     <template v-if="serviceCodePrefix" slot="prepend-inner">
                       <v-btn depressed class="mr-2">
@@ -52,8 +52,8 @@
                       </v-btn>
                     </template>
                     <template slot="label">
-                      <span v-if="form.department"> Service code </span>
-                      <span v-else>Please select department first </span>
+                      <span v-if="form.category"> Service code </span>
+                      <span v-else>Please select category first </span>
                       <span class="red--text">*</span>
                     </template>
                   </v-text-field>
@@ -96,9 +96,12 @@
                 </ValidationProvider>
                 <v-autocomplete
                   v-model="form.projectManager"
-                  :items="users"
+                  :items="projectManagers"
                   hide-no-data
-                  item-text="fullName"
+                  :item-text="
+                    (item) =>
+                      `${item.firstName} ${item.middleName} ${item.lastName}`
+                  "
                   item-value="_id"
                   label="Product Manager"
                   placeholder="Select Product Manager"
@@ -147,7 +150,6 @@
             </v-row>
           </v-card-text>
         </v-card>
-
         <v-card class="mt-5">
           <v-card-title>Images</v-card-title>
           <v-divider></v-divider>
@@ -159,13 +161,13 @@
                 </v-alert>
                 <VueFileAgent
                   ref="vueFileAgent"
-                  v-model="fileRecords"
+                  v-model="form.files"
                   :theme="'grid'"
                   multiple
                   deletable
                   sortable="handle"
                   meta
-                  :accept="'image/*'"
+                  :accept="'image/jpeg'"
                   :max-size="'10MB'"
                   :max-files="14"
                   :help-text="'Choose images'"
@@ -176,7 +178,22 @@
                   @select="filesSelected($event)"
                   @beforedelete="onBeforeDelete($event)"
                   @delete="fileDeleted($event)"
+                  name="files"
                 ></VueFileAgent>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="mt-5">
+                <v-btn
+                  color="primary"
+                  class="float-right"
+                  :disabled="!fileRecordsForUpload.length"
+                  @click="uploadFiles()"
+                  >Upload {{ fileRecordsForUpload.length }}
+                  {{
+                    fileRecordsForUpload.length > 1 ? 'files' : 'file'
+                  }}</v-btn
+                >
               </v-col>
             </v-row>
           </v-card-text>
@@ -213,6 +230,12 @@
                   :headers="productAttributeTableHeader"
                   :items="form.attributes"
                 >
+                  <template slot="item.attribute.name" slot-scope="row">
+                    {{ row.item.attribute.name }}
+                  </template>
+                  <template slot="item.attribute.description" slot-scope="row">
+                    {{ row.item.attribute.name }}
+                  </template>
                   <template slot="item.options" slot-scope="row">
                     {{ row.item.options | concat_names }}
                   </template>
@@ -346,7 +369,13 @@
 
         <div class="mt-5">
           <v-btn @click.prevent="back">cancel</v-btn>
-          <v-btn color="primary" type="submit" class="float-right">save</v-btn>
+          <v-btn
+            color="primary"
+            type="submit"
+            class="float-right"
+            :disabled="invalid"
+            >save</v-btn
+          >
         </div>
       </form>
     </ValidationObserver>
@@ -359,13 +388,21 @@
     />
   </section>
 </template>
+<style>
+.swal-text {
+  text-align: center;
+}
+</style>
 <script>
 import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
 import _filter from 'lodash/filter'
 import _forEach from 'lodash/forEach'
+import _has from 'lodash/has'
 import _find from 'lodash/find'
 import { VueEditor } from 'vue2-editor'
+import Config from '~/config'
+import { merge as _merge } from 'lodash'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -374,23 +411,25 @@ export default {
     VueEditor,
   },
   apollo: {
-    users: {
+    admins: {
       query: gql`
         query {
-          users {
+          admins {
             _id
-            fullName
+            firstName
+            middleName
+            lastName
           }
         }
       `,
       update(data) {
-        return data.users
+        return data.admins
       },
     },
-    departments: {
+    categories: {
       query: gql`
         query {
-          departments {
+          categories {
             _id
             name
             code
@@ -398,13 +437,28 @@ export default {
         }
       `,
       update(data) {
-        return data.departments
+        return data.categories
       },
+    },
+    files: {
+      query: gql`
+        query {
+          files {
+            _id
+            path
+            file
+          }
+        }
+      `,
     },
   },
   props: {
     service: {
       type: Object,
+      default: null,
+    },
+    files: {
+      type: Array,
       default: null,
     },
     previousPage: {
@@ -422,21 +476,30 @@ export default {
       enquireOnly: false,
       showInStore: true,
       tags: [],
+      files: [],
       slug: null,
       workforceThreshold: 100,
       seoTitle: null,
       seoKeywords: null,
       seoDescription: null,
       projectManager: null,
-      department: null,
+      category: null,
       attributes: [],
       variants: [],
     },
     tags: ['seo', 'web', 'web development', 'web design', 'graphics'],
     productImageAttachments: [],
-    fileRecords: [],
-    uploadUrl: 'https://www.mocky.io/v2/5d4fb20b3000005c111099e3',
-    uploadHeaders: { 'X-Test-Header': 'vue-file-agent' },
+
+    fileURL: Config[process.env.NODE_ENV]
+      ? Config[process.env.NODE_ENV].API_BASE_URL + '/files/'
+      : Config.dev.API_BASE_URL + '/files/',
+
+    uploadedImages: [],
+    fileRecords: [], //used form.files instead for VueFileAgent v-model
+    uploadUrl: Config[process.env.NODE_ENV]
+      ? Config[process.env.NODE_ENV].API_BASE_URL + '/uploadFiles'
+      : Config.dev.API_BASE_URL + '/uploadFiles',
+    uploadHeaders: {},
     fileRecordsForUpload: [], // maintain an upload queue
     productAttributeTableHeader: [
       { text: 'Name', align: 'start', value: 'name', width: '300px' },
@@ -476,11 +539,22 @@ export default {
   }),
   computed: {
     serviceCodePrefix() {
-      const departmentSelected = _find(
-        this.departments,
-        (o) => o._id === this.form.department
+      const categorySelected = _find(
+        this.categories,
+        (o) => o._id === this.form.category
       )
-      return departmentSelected ? `${departmentSelected.code}-` : null
+      return categorySelected ? `${categorySelected.code}-` : null
+    },
+
+    projectManagers() {
+      return (
+        this.admins &&
+        this.admins.map((x) => {
+          return _merge(x, {
+            fullName: `${[x.firstName, x.middleName, x.lastName].join(' ')}`,
+          })
+        })
+      )
     },
   },
   watch: {
@@ -492,8 +566,46 @@ export default {
         _assign(this.form, value)
       }
     },
+    files(value) {
+      this.fileRecords = []
+      if (value) {
+        debugger
+        //fetch files from the server's '/uploads' directory
+        this.form.files = this.form.files.map((file, idx) => {
+          if (file.filename) {
+            return {
+              name: file.filename,
+              size: file.size,
+              type: file.mimetype,
+              ext: file.filename.slice(file.filename.length - 3),
+              url: this.fileURL + file.filename,
+            }
+          } else {
+            let name = file.file.name
+            return {
+              name: name,
+              size: file.size,
+              type:  file.file.type,
+              ext: name.slice(name.length - 3),
+              url: this.fileURL + name,
+            }
+          }
+        })
+      }
+      this.uploadedImages = this.form.files
+      this.fileRecords = this.form.files
+    },
   },
   methods: {
+    urltoFile(url, filename, mimeType) {
+      return fetch(url)
+        .then(function (res) {
+          return res.arrayBuffer()
+        })
+        .then(function (buf) {
+          return new File([buf], filename, { type: mimeType })
+        })
+    },
     back() {
       this.$router.push(this.previousPage)
       this.resetForm()
@@ -512,13 +624,14 @@ export default {
           enquireOnly: false,
           showInStore: true,
           tags: [],
+          files: [],
           slug: null,
           workforceThreshold: 100,
           seoTitle: null,
           seoKeywords: null,
           seoDescription: null,
           projectManager: null,
-          department: null,
+          category: null,
           attributes: [],
           variants: [],
         },
@@ -526,10 +639,12 @@ export default {
       })
     },
     async submit() {
+      debugger
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
       this.form.code = this.serviceCodePrefix + this.form.code
-      const allowedItems = this.getAllowedItems(this.form, [
+
+      var allowedItems = this.getAllowedItems(this.form, [
         'name',
         'code',
         'description',
@@ -537,6 +652,7 @@ export default {
         'pricing',
         // 'enquireOnly',
         // 'showInStore',
+        'files',
         'tags',
         'slug',
         'workforceThreshold',
@@ -544,22 +660,75 @@ export default {
         'seoKeywords',
         'seoDescription',
         'projectManager',
-        'department',
+        'category',
         'attributes',
         'variants',
       ])
+
+      allowedItems.files = this.uploadedImages
+
+      //construct AttributeInput accordingly
+
+      if (allowedItems.attributes) {
+        allowedItems.attributes.forEach((attribute, idx) => {
+          attribute.options.forEach((opt, idx) => {
+            attribute.options[idx] = {
+              name: opt.name,
+              code: opt.name,
+            }
+          })
+
+          const attrInput = {
+            attribute: {
+              name: attribute.name,
+              code: attribute.name,
+            },
+            options: attribute.options,
+          }
+          allowedItems.attributes[idx] = attrInput
+        })
+      }
+
+      //construct VariantInput accordingly
+      if (allowedItems.variants) {
+        allowedItems.variants.forEach((variant, idx) => {
+          //construct proper VariantAttributeData
+          variant.attributeData.forEach((data, k) => {
+            const attrData = {
+              attribute: data.attribute.code,
+              option: data.option.code,
+            }
+
+            variant.attributeData[k] = attrData
+          })
+
+          const variantInput = {
+            name: variant.name,
+            code: variant.code,
+            description: variant.description,
+            pricing: parseFloat(variant.pricing),
+            attributeData: variant.attributeData,
+          }
+
+          allowedItems.variants[idx] = variantInput
+        })
+      }
       // eslint-disable-next-line no-console
-      // return console.log(allowedItems)
 
       // eslint-disable-next-line no-unreachable
       let result = null
+
       if (this.service) {
+        // result = await this.updateMutation('File', allowedItems.files)
+
         result = await this.updateMutation(
           'Service',
           allowedItems,
           this.service._id
         )
       } else {
+        // result = await this.createMutation('File', allowedItems.files)
+
         result = await this.createMutation('Service', allowedItems)
       }
 
@@ -578,12 +747,27 @@ export default {
       if (!this.tags.includes(newTag)) this.tags.push(newTag)
     },
     uploadFiles() {
-      // Using the default uploader. You may use another uploader instead.
-      this.$refs.vueFileAgent.upload(
-        this.uploadUrl,
-        this.uploadHeaders,
-        this.fileRecordsForUpload
-      )
+      let self = this
+      this.$refs.vueFileAgent
+        .upload(
+          this.uploadUrl,
+          this.uploadHeaders,
+          this.fileRecordsForUpload,
+          function createFormData(fileData) {
+            var formData = new FormData()
+            formData.append('files', fileData.file)
+            return formData
+          }
+        )
+        .then((res) => {
+          res.forEach((item) => {
+            let file = item.data.files[0]
+            file.url = this.fileURL + file.filename
+
+            self.uploadedImages.push(file)
+          })
+        })
+
       this.fileRecordsForUpload = []
     },
     deleteUploadedFile(fileRecord) {
@@ -607,8 +791,8 @@ export default {
       if (i !== -1) {
         // queued file, not yet uploaded. Just remove from the arrays
         this.fileRecordsForUpload.splice(i, 1)
-        const k = this.fileRecords.indexOf(fileRecord)
-        if (k !== -1) this.fileRecords.splice(k, 1)
+        const k = this.form.files.indexOf(fileRecord)
+        if (k !== -1) this.form.files.splice(k, 1)
       } else if (confirm('Are you sure you want to delete?')) {
         this.$refs.vueFileAgent.deleteFileRecord(fileRecord) // will trigger 'delete' event
       }
@@ -630,6 +814,7 @@ export default {
           itemFound = true
         }
       })
+
       if (!itemFound) this.form.attributes.push(attribute)
 
       const variantsData = await this.generateVariantsData(this.form.attributes)
@@ -637,6 +822,7 @@ export default {
       this.form.variants = variantsData.map((variant) => {
         return {
           name: variant.name,
+          code: variant.code,
           description: null,
           pricing: 0.0,
           // isEnquiry: false,
@@ -646,16 +832,28 @@ export default {
     },
     deleteAttribute(item) {
       // eslint-disable-next-line no-undef
+
       swal({
         title: 'Are you sure?',
-        text: `This will affect the variant tables also, and your unsaved work will be lost.`,
+        text: _has(item, 'attributeData')
+          ? `You are about to delete variant '${item.name}'`
+          : `You are about to delete attribute '${item.name}'. This will also remove all variants data below.`, //variant if item has attributeData, attribute otherwise
         icon: 'warning',
         buttons: true,
         dangerMode: true,
       }).then((willDelete) => {
         if (willDelete) {
           this.form.attributes = _filter(this.form.attributes, (i) => {
-            return item.code !== i.code
+            return item.name !== i.name
+          })
+
+          //clear variants when deleting attribute
+          if (!_has(item, 'attributeData')) {
+            this.form.variants = []
+          }
+
+          this.form.variants = _filter(this.form.variants, (i) => {
+            return item.name !== i.name
           })
         }
       })

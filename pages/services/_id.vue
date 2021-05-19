@@ -5,7 +5,10 @@
         v-if="$apollo.queries.service.loading"
         loading-text="Loading Service..."
       />
-      <service-form v-else :service="service"></service-form>
+      <service-form v-else 
+        :service="service"
+        :files="service.files"
+      ></service-form>
     </v-col>
   </v-row>
 </template>
@@ -30,6 +33,7 @@ export default {
             shortDescription
             pricing
             tags
+            files
             slug
             workforceThreshold
             seoTitle
