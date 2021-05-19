@@ -569,7 +569,7 @@ export default {
     files(value) {
       this.fileRecords = []
       if (value) {
-        debugger
+        
         //fetch files from the server's '/uploads' directory
         this.form.files = this.form.files.map((file, idx) => {
           if (file.filename) {
@@ -639,7 +639,7 @@ export default {
       })
     },
     async submit() {
-      debugger
+      
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
       this.form.code = this.serviceCodePrefix + this.form.code

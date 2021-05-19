@@ -68,7 +68,7 @@ export default {
   }),
   methods: {
     getFileName(files) {
-      debugger
+      
       if (files && files.length > 0 && files[0]) {
         let file = files[0]
         let name = file.filename ? file.filename : file.file.name
