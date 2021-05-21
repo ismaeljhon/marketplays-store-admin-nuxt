@@ -489,7 +489,6 @@ export default {
     },
     tags: ['seo', 'web', 'web development', 'web design', 'graphics'],
     productImageAttachments: [],
-
     fileURL: Config[process.env.NODE_ENV]
       ? Config[process.env.NODE_ENV].API_BASE_URL + '/files/'
       : Config.dev.API_BASE_URL + '/files/',
@@ -567,6 +566,7 @@ export default {
       }
     },
     files(value) {
+
       this.fileRecords = []
       if (value) {
         
@@ -665,10 +665,10 @@ export default {
         'variants',
       ])
 
+
       allowedItems.files = this.uploadedImages
 
       //construct AttributeInput accordingly
-
       if (allowedItems.attributes) {
         allowedItems.attributes.forEach((attribute, idx) => {
           attribute.options.forEach((opt, idx) => {
@@ -763,7 +763,6 @@ export default {
           res.forEach((item) => {
             let file = item.data.files[0]
             file.url = this.fileURL + file.filename
-
             self.uploadedImages.push(file)
           })
         })

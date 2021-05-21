@@ -102,7 +102,6 @@ export default {
   },
   methods: {
     show(item = {}, isCreate = true) {
-
       _assign(this, {
         dialog: true,
         isCreate,
@@ -147,6 +146,7 @@ export default {
       this.reset()
     },
     updateAttributeOptions(option) {
+      option.code = option.name
       this.form.options.push(option)
       this.attributeOptions.push(option)
       this.$refs.observer.reset()

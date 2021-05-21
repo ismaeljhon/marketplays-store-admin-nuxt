@@ -2,10 +2,10 @@
   <v-row>
     <v-col cols="12">
       <loading
-        v-if="$apollo.queries.user.loading"
-        loading-text="Loading User..."
+        v-if="$apollo.queries.admin.loading"
+        loading-text="Loading Admin User..."
       />
-      <admin-user-form v-else :user="user"></admin-user-form>
+      <admin-user-form v-else :admin="admin"></admin-user-form>
     </v-col>
   </v-row>
 </template>
@@ -16,16 +16,19 @@ export default {
   name: 'EditAdminUser',
   layout: 'single-page',
   data: () => ({
-    user: {},
+    admin: {},
   }),
   apollo: {
-    user: {
+    admin: {
       query: gql`
-        query user($id: MongoID!) {
-          user(_id: $id) {
+        query admin($id: MongoID!) {
+          admin(_id: $id) {
             _id
-            fullName
+            firstName
+            middleName
+            lastName
             email
+            contactNumber
             teamLeadOf {
               _id
             }
@@ -41,12 +44,13 @@ export default {
         }
       },
       update(data) {
-        return data.user
+        return data.admin
       },
       result(response) {
+
         this.$store.commit(
           'setPageTitle',
-          `Edit Admin User - ${response.data.user.fullName}`
+          `Edit Admin User - ${response.data.admin.firstName} ${response.data.admin.lastName}`
         )
       },
     },

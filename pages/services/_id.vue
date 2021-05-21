@@ -42,8 +42,36 @@ export default {
             projectManager {
               _id
             }
-            department {
+            category {
               _id
+            }
+            attributes {
+              _id
+              attribute {
+                name
+                code
+              }
+              options {
+                name
+                code
+              }
+            }
+            variants {
+              _id
+              name
+              code
+              description
+              pricing
+              attributeData {
+                attribute {
+                  name
+                  code
+                }
+                option {
+                  name
+                  code
+                }
+              }
             }
           }
         }
@@ -58,8 +86,8 @@ export default {
           data.service.projectManager = data.service.projectManager._id
         }
 
-        if (data.service.department) {
-          data.service.department = data.service.department._id
+        if (data.service.category) {
+          data.service.category = data.service.category._id
         }
 
         return data.service
