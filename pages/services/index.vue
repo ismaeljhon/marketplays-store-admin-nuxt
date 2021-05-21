@@ -117,6 +117,7 @@ export default {
           name
           files
           pricing
+          files
         }
       `,
     },

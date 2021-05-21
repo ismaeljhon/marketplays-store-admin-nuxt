@@ -489,10 +489,15 @@ export default {
     },
     tags: ['seo', 'web', 'web development', 'web design', 'graphics'],
     productImageAttachments: [],
+    fileURL: Config[process.env.NODE_ENV]
+      ? Config[process.env.NODE_ENV].API_BASE_URL + '/files/'
+      : Config.dev.API_BASE_URL + '/files/',
+
+    uploadedImages: [],
     fileRecords: [], //used form.files instead for VueFileAgent v-model
     uploadUrl: Config[process.env.NODE_ENV]
-      ? Config[process.env.NODE_ENV].API_BASE_URL + 'uploadFiles'
-      : Config.dev.API_BASE_URL + 'uploadFiles',
+      ? Config[process.env.NODE_ENV].API_BASE_URL + '/uploadFiles'
+      : Config.dev.API_BASE_URL + '/uploadFiles',
     uploadHeaders: {},
     fileRecordsForUpload: [], // maintain an upload queue
     productAttributeTableHeader: [
@@ -561,35 +566,34 @@ export default {
       }
     },
     files(value) {
-      var filesArr = []
-      var fileObj = {}
 
+      this.fileRecords = []
       if (value) {
+        
         //fetch files from the server's '/uploads' directory
-        this.form.files.forEach((file, idx) => {
-          this.urltoFile(
-            'http://localhost:5001/files/' + file,
-            file,
-            'image/jpeg'
-          ).then((returnedFile) => {
-            //construct the file Object
-            fileObj = {
-              lastModified: returnedFile.lastModified,
-              lastModifiedDate: returnedFile.lastModifiedDate,
-              name: returnedFile.name,
-              size: returnedFile.size,
-              type: returnedFile.type,
-              ext: returnedFile.name.slice(returnedFile.name.length - 3),
-              file: 'http://localhost:5001/files/' + returnedFile.name,
+        this.form.files = this.form.files.map((file, idx) => {
+          if (file.filename) {
+            return {
+              name: file.filename,
+              size: file.size,
+              type: file.mimetype,
+              ext: file.filename.slice(file.filename.length - 3),
+              url: this.fileURL + file.filename,
             }
-
-            filesArr.push(fileObj)
-          })
+          } else {
+            let name = file.file.name
+            return {
+              name: name,
+              size: file.size,
+              type:  file.file.type,
+              ext: name.slice(name.length - 3),
+              url: this.fileURL + name,
+            }
+          }
         })
       }
-
-      this.form.files = filesArr
-      this.fileRecords = filesArr
+      this.uploadedImages = this.form.files
+      this.fileRecords = this.form.files
     },
   },
   methods: {
@@ -635,6 +639,7 @@ export default {
       })
     },
     async submit() {
+      
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
       this.form.code = this.serviceCodePrefix + this.form.code
@@ -660,14 +665,10 @@ export default {
         'variants',
       ])
 
-      if (allowedItems.files) {
-        allowedItems.files.forEach((image, idx) => {
-          allowedItems.files[idx] = image.upload.data.files[0].filename
-        })
-      }
+
+      allowedItems.files = this.uploadedImages
 
       //construct AttributeInput accordingly
-
       if (allowedItems.attributes) {
         allowedItems.attributes.forEach((attribute, idx) => {
           attribute.options.forEach((opt, idx) => {
@@ -746,6 +747,7 @@ export default {
       if (!this.tags.includes(newTag)) this.tags.push(newTag)
     },
     uploadFiles() {
+      let self = this
       this.$refs.vueFileAgent
         .upload(
           this.uploadUrl,
@@ -758,8 +760,11 @@ export default {
           }
         )
         .then((res) => {
-          this.fileRecords = res
-          console.log(this.fileRecords)
+          res.forEach((item) => {
+            let file = item.data.files[0]
+            file.url = this.fileURL + file.filename
+            self.uploadedImages.push(file)
+          })
         })
 
       this.fileRecordsForUpload = []

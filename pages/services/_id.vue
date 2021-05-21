@@ -5,8 +5,7 @@
         v-if="$apollo.queries.service.loading"
         loading-text="Loading Service..."
       />
-      <service-form
-        v-else
+      <service-form v-else 
         :service="service"
         :files="service.files"
       ></service-form>
