@@ -16,6 +16,11 @@ export default {
 
   publicRuntimeConfig: {
     apiUrl: Config.apiUrl,
+    axios: {
+      browserBaseURL: Config[process.env.NODE_ENV]
+        ? Config[process.env.NODE_ENV].API_BASE_URL
+        : Config.dev.API_BASE_URL
+    }
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
@@ -46,7 +51,12 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/apollo',
+    '@nuxtjs/axios',
   ],
+
+  axios: {
+    baseURL: 'http://localhost:5001', // Used as fallback if no runtime config is provided
+  },
 
   apollo: {
     clientConfigs: {
