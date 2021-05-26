@@ -562,14 +562,24 @@ export default {
         if (value.code) {
           value.code = value.code.split('-')[1]
         }
+        if (value.attributes) {
+          value.attributes.forEach((attr, idx) => {
+            console.log(attr)
+            const attrObj = {
+              name: attr.attribute.name,
+              code: attr.attribute.code,
+              description: '',
+              options: attr.options,
+            }
+            value.attributes[idx] = attrObj
+          })
+        }
         _assign(this.form, value)
       }
     },
     files(value) {
-
       this.fileRecords = []
       if (value) {
-        
         //fetch files from the server's '/uploads' directory
         this.form.files = this.form.files.map((file, idx) => {
           if (file.filename) {
@@ -585,7 +595,7 @@ export default {
             return {
               name: name,
               size: file.size,
-              type:  file.file.type,
+              type: file.file.type,
               ext: name.slice(name.length - 3),
               url: this.fileURL + name,
             }
@@ -639,7 +649,6 @@ export default {
       })
     },
     async submit() {
-      
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
       this.form.code = this.serviceCodePrefix + this.form.code
@@ -664,7 +673,6 @@ export default {
         'attributes',
         'variants',
       ])
-
 
       allowedItems.files = this.uploadedImages
 
@@ -719,7 +727,17 @@ export default {
       let result = null
 
       if (this.service) {
+        console.log(this.service)
         // result = await this.updateMutation('File', allowedItems.files)
+        // console.log(allowedItems)
+
+        allowedItems.attributes.forEach((attr, idx) => {
+          const attrObj = {
+            name: attr.attribute.name,
+            code: attr.attribute.code,
+          }
+          allowedItems.attributes[idx] = attrObj
+        })
 
         result = await this.updateMutation(
           'Service',
