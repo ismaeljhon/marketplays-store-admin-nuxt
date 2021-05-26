@@ -729,15 +729,20 @@ export default {
       if (this.service) {
         console.log(this.service)
         // result = await this.updateMutation('File', allowedItems.files)
-        // console.log(allowedItems)
+        console.log(allowedItems)
 
-        allowedItems.attributes.forEach((attr, idx) => {
-          const attrObj = {
-            name: attr.attribute.name,
-            code: attr.attribute.code,
-          }
-          allowedItems.attributes[idx] = attrObj
-        })
+        //reconstruct attributes object
+        if (allowedItems.attributes) {
+          allowedItems.attributes.forEach((attr, idx) => {
+            const attrObj = {
+              name: attr.attribute.name,
+              code: attr.attribute.code,
+            }
+            allowedItems.attributes[idx] = attrObj
+          })
+        }
+
+        console.log(this.service._id)
 
         result = await this.updateMutation(
           'Service',
