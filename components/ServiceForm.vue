@@ -489,15 +489,10 @@ export default {
     },
     tags: ['seo', 'web', 'web development', 'web design', 'graphics'],
     productImageAttachments: [],
-    fileURL: Config[process.env.NODE_ENV]
-      ? Config[process.env.NODE_ENV].API_BASE_URL + '/files/'
-      : Config.dev.API_BASE_URL + '/files/',
-
+    fileURL: process.env.baseUrl + '/files/',
     uploadedImages: [],
     fileRecords: [], //used form.files instead for VueFileAgent v-model
-    uploadUrl: Config[process.env.NODE_ENV]
-      ? Config[process.env.NODE_ENV].API_BASE_URL + '/uploadFiles'
-      : Config.dev.API_BASE_URL + '/uploadFiles',
+    uploadUrl: process.env.baseUrl + '/uploadFiles',
     uploadHeaders: {},
     fileRecordsForUpload: [], // maintain an upload queue
     productAttributeTableHeader: [
@@ -566,10 +561,8 @@ export default {
       }
     },
     files(value) {
-
       this.fileRecords = []
       if (value) {
-        
         //fetch files from the server's '/uploads' directory
         this.form.files = this.form.files.map((file, idx) => {
           if (file.filename) {
@@ -585,7 +578,7 @@ export default {
             return {
               name: name,
               size: file.size,
-              type:  file.file.type,
+              type: file.file.type,
               ext: name.slice(name.length - 3),
               url: this.fileURL + name,
             }
@@ -639,7 +632,6 @@ export default {
       })
     },
     async submit() {
-      
       this.form.pricing = parseFloat(this.form.pricing)
       this.form.workforceThreshold = parseFloat(this.form.workforceThreshold)
       this.form.code = this.serviceCodePrefix + this.form.code
@@ -664,7 +656,6 @@ export default {
         'attributes',
         'variants',
       ])
-
 
       allowedItems.files = this.uploadedImages
 

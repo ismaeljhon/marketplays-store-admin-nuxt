@@ -62,13 +62,10 @@ export default {
     },
   },
   data: () => ({
-    apiEndpoint: Config[process.env.NODE_ENV]
-      ? Config[process.env.NODE_ENV].API_BASE_URL + '/files/'
-      : Config.dev.API_BASE_URL + '/files/',
+    apiEndpoint: process.env.baseUrl + '/files/',
   }),
   methods: {
     getFileName(files) {
-      
       if (files && files.length > 0 && files[0]) {
         let file = files[0]
         let name = file.filename ? file.filename : file.file.name
