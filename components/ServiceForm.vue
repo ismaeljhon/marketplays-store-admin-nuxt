@@ -403,6 +403,7 @@ import _find from 'lodash/find'
 import { VueEditor } from 'vue2-editor'
 import Config from '~/config'
 import { merge as _merge } from 'lodash'
+import  slugify from 'slugify'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -658,6 +659,11 @@ export default {
       ])
 
       allowedItems.files = this.uploadedImages
+
+      // fix empty slug
+      if(!allowedItems.slug){
+        allowedItems.slug = slugify(allowedItems.name)
+      }
 
       //construct AttributeInput accordingly
       if (allowedItems.attributes) {

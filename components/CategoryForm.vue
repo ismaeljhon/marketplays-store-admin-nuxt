@@ -81,6 +81,7 @@
 <script>
 import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
+import  slugify from 'slugify'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -164,6 +165,11 @@ export default {
         'seoDescription',
         'teamLead',
       ])
+
+       // fix empty slug
+      if(!allowedItems.slug){
+        allowedItems.slug = slugify(allowedItems.name)
+      }
 
       let result = null
       if (this.category) {
