@@ -32,7 +32,7 @@
             name="Name"
             :rules="'required'"
           >
-            <v-text-field v-model="form.name" :error-messages="errors">
+            <v-text-field v-model="form.name" :error-messages="errors" v-on:keyup="slugifyName" v-on:change="slugifyName">>
               <template slot="label">
                 Name <span class="red--text">*</span>
               </template>
@@ -131,6 +131,11 @@ export default {
     },
   },
   methods: {
+
+    slugifyName(){
+      this.form.slug = slugify(this.form.name)      
+    },
+    
     back() {
       this.$router.push(this.previousPage)
       this.resetForm()
