@@ -13,7 +13,7 @@
                   name="Name"
                   :rules="'required'"
                 >
-                  <v-text-field v-model="form.name" :error-messages="errors"  v-on:keyup="slugifyName" v-on:change="slugifyName">
+                  <v-text-field v-model="form.name" :error-messages="errors" @keyup="slugifyName" >
                     <template slot="label">
                       Name <span class="red--text">*</span>
                     </template>
