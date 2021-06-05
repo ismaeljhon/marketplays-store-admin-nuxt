@@ -32,7 +32,7 @@
             name="Name"
             :rules="'required'"
           >
-            <v-text-field v-model="form.name" :error-messages="errors">
+            <v-text-field v-model="form.name" :error-messages="errors" @keyup="slugifyName">
               <template slot="label">
                 Name <span class="red--text">*</span>
               </template>
@@ -81,6 +81,7 @@
 <script>
 import gql from 'graphql-tag'
 import _assign from 'lodash/assign'
+import  slugify from 'slugify'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -130,6 +131,11 @@ export default {
     },
   },
   methods: {
+
+    slugifyName(){
+      this.form.slug = slugify(this.form.name)      
+    },
+    
     back() {
       this.$router.push(this.previousPage)
       this.resetForm()
@@ -164,6 +170,11 @@ export default {
         'seoDescription',
         'teamLead',
       ])
+
+       // fix empty slug
+      if(!allowedItems.slug){
+        allowedItems.slug = slugify(allowedItems.name)
+      }
 
       let result = null
       if (this.category) {

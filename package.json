@@ -23,6 +23,7 @@
     "moment-timezone": "^0.5.33",
     "nuxt": "^2.14.6",
     "short-uuid": "^4.1.0",
+    "slugify": "^1.5.3",
     "sweetalert": "^2.1.2",
     "vee-validate": "^3.4.5",
     "vue-currency-filter": "^5.2.0",

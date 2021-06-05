@@ -13,7 +13,7 @@
                   name="Name"
                   :rules="'required'"
                 >
-                  <v-text-field v-model="form.name" :error-messages="errors">
+                  <v-text-field v-model="form.name" :error-messages="errors" @keyup="slugifyName" >
                     <template slot="label">
                       Name <span class="red--text">*</span>
                     </template>
@@ -403,6 +403,7 @@ import _find from 'lodash/find'
 import { VueEditor } from 'vue2-editor'
 import Config from '~/config'
 import { merge as _merge } from 'lodash'
+import  slugify from 'slugify'
 
 export default {
   // eslint-disable-next-line vue/name-property-casing
@@ -590,6 +591,10 @@ export default {
     },
   },
   methods: {
+    slugifyName(){
+      this.form.slug = slugify(this.form.name)      
+    },
+
     urltoFile(url, filename, mimeType) {
       return fetch(url)
         .then(function (res) {
@@ -658,6 +663,11 @@ export default {
       ])
 
       allowedItems.files = this.uploadedImages
+
+      // fix empty slug
+      if(!allowedItems.slug){
+        allowedItems.slug = slugify(allowedItems.name)
+      }
 
       //construct AttributeInput accordingly
       if (allowedItems.attributes) {
